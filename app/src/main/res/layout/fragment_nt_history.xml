@@ -1,0 +1,40 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context="alonedroid.com.nanitabe.scene.select.NtSelectFragment_"
+    >
+
+    <FrameLayout
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        />
+
+    <ImageView
+        android:id="@+id/nt_history_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/title_bar"
+        />
+
+    <GridView
+        android:id="@+id/nt_history_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/nt_history_title"
+        android:layout_gravity="top|center"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="1"
+        android:padding="10dp"
+        android:verticalSpacing="10dp"
+        />
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context="alonedroid.com.nanitabe.scene.select.NtSearchFragment_"
+    >
+
+    <FrameLayout
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        />
+
+    <ImageView
+        android:id="@+id/nt_search_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/title_bar"
+        />
+
+    <TextView
+        android:id="@+id/nt_search_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="2.5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/center"
+        android:background="@drawable/custom_button"
+        android:gravity="center|center"
+        android:text="@string/top"
+        android:textColor="@color/white_300"
+        />
+
+    <TextView
+        android:id="@+id/nt_search_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="2.5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@id/center"
+        android:background="@drawable/custom_button"
+        android:gravity="center|center"
+        android:text="@string/favorite"
+        android:textColor="@color/white_300"
+        />
+
+    <WebView
+        android:id="@+id/nt_search_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/nt_search_top"
+        android:layout_below="@id/nt_search_title"
+        />
+</RelativeLayout>

@@ -1,0 +1,41 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="50dip"
+    android:background="#CF6F00"
+    tools:context="alonedroid.com.nanitabe.view.NtHistoryItemView_"
+    >
+
+    <ImageView
+        android:id="@+id/history_image"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_image"
+        />
+
+    <TextView
+        android:id="@+id/history_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="2dip"
+        android:layout_marginRight="2dip"
+        android:layout_marginTop="2dip"
+        android:layout_toRightOf="@id/history_image"
+        android:background="#EFEFCF"
+        android:padding="3dip"
+        />
+
+    <TextView
+        android:id="@+id/history_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="2dip"
+        android:layout_marginRight="2dip"
+        android:background="#EFEFCF"
+        />
+</RelativeLayout>

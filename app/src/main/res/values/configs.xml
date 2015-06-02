@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="top_url">http://cookpad.com</string>
+    <string name="search_url">http://cookpad.com/search/</string>
+    <string name="recipe_url">http://cookpad.com/recipe/</string>
+    <string name="error_url">file:///android_res/raw/networkerror.html</string>
+</resources>

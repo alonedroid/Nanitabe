@@ -1,0 +1,110 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg"
+                tools:context="alonedroid.com.nanitabe.MainActivity"
+    >
+
+    <FrameLayout
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/title_bar"
+        />
+
+    <EditText
+        android:id="@+id/nt_top_search_text"
+        android:layout_width="200dp"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_above="@id/center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/default_view_height"
+        android:background="@drawable/custom_frame"
+        android:gravity="center"
+        android:hint="Search"
+        />
+
+    <ImageView
+        android:id="@+id/nt_top_search"
+        android:layout_width="@dimen/default_view_height"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_above="@id/center"
+        android:layout_marginBottom="@dimen/default_view_height"
+        android:layout_toRightOf="@id/nt_top_search_text"
+        android:background="@drawable/search"
+        android:clickable="true"
+        />
+
+    <LinearLayout
+        android:id="@+id/nt_top_history"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_below="@id/center"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_toLeftOf="@id/center"
+        android:background="@drawable/custom_button"
+        android:clickable="true"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center|center"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/ic_description_white"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center|center"
+            android:text="@string/history"
+            android:textColor="@color/white_300"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/nt_top_list"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_below="@id/center"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_toRightOf="@id/center"
+        android:background="@drawable/custom_button"
+        android:clickable="true"
+        android:orientation="vertical"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center|center"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/ic_book_white"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center|center"
+            android:text="@string/list"
+            android:textColor="@color/white_300"
+            />
+    </LinearLayout>
+</RelativeLayout>

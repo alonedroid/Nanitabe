@@ -1,0 +1,18 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- US material design spaces -->
+    <dimen name="dimen_space_8dp">8dp</dimen>
+    <dimen name="dimen_space_16dp">16dp</dimen>
+    <dimen name="dimen_space_24dp">24dp</dimen>
+    <dimen name="dimen_space_48dp">48dp</dimen>
+    <dimen name="dimen_space_64dp">64dp</dimen>
+    <dimen name="dimen_space_56dp">56dp</dimen>
+    <dimen name="dimen_space_72dp">72dp</dimen>
+    <dimen name="dimen_space_80dp">80dp</dimen>
+    <dimen name="dimen_space_88dp">88dp</dimen>
+    <dimen name="dimen_zpos_s">88dp</dimen>
+    <!-- Application Layout Size -->
+    <dimen name="default_view_height">45dp</dimen>
+</resources>

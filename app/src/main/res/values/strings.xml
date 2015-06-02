@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Nanitabe</string>
+    <string name="top">トップへ</string>
+    <string name="favorite">favorite</string>
+    <string name="history">履歴</string>
+    <string name="list">リスト</string>
+    <string name="already_favorite">リストへ追加</string>
+    <string name="not_favorite">リストから削除</string>
+    <string name="dialog_title">確認</string>
+    <string name="dialog_message">選択したレシピを削除しますか？</string>
+    <string name="dialog_positive">はい</string>
+    <string name="dialog_negative">いいえ</string>
+
+</resources>

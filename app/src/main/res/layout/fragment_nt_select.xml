@@ -1,0 +1,71 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context="alonedroid.com.nanitabe.scene.select.NtSelectFragment_"
+    >
+
+    <FrameLayout
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        />
+
+    <ImageView
+        android:id="@+id/nt_select_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/title_bar"
+        />
+
+    <TextView
+        android:id="@+id/nt_select_delete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="2.5dp"
+        android:layout_toLeftOf="@id/center"
+        android:background="@drawable/custom_button"
+        android:gravity="center|center"
+        android:text="delete"
+        android:textColor="@color/white_300"
+        />
+
+    <TextView
+        android:id="@+id/nt_select_done"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="2.5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@id/center"
+        android:background="@drawable/custom_button"
+        android:gravity="center|center"
+        android:text="select"
+        android:textColor="@color/white_300"
+        />
+
+    <GridView
+        android:id="@+id/nt_select_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/nt_select_delete"
+        android:layout_below="@id/nt_select_title"
+        android:layout_gravity="top|center"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="1"
+        android:padding="10dp"
+        android:verticalSpacing="10dp"
+        />
+</RelativeLayout>
