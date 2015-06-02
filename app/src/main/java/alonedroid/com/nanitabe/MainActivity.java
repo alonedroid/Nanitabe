@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
+
     @AfterInject
     void init() {
         this.routerSubscribe = NtApplication.getRouter().subscribe(this::replaceFragment);
