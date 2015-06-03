@@ -3,13 +3,22 @@ package alonedroid.com.nanitabe.utility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class NtRecipeItem {
 
-    private static final String IMAGE = "image";
+    public static final String URL = "url";
 
-    private static final String TITLE = "title";
+    public static final String IMAGE = "image";
 
-    private static final String DATE = "date";
+    public static final String TITLE = "title";
+
+    public static final String DATE = "date";
+
+    @Getter
+    @Setter
+    private boolean checked;
 
     JSONObject root;
 
@@ -23,6 +32,10 @@ public class NtRecipeItem {
 
     public String getImageUrl() {
         return getValue(IMAGE);
+    }
+
+    public String getUrl() {
+        return getValue(URL);
     }
 
     public String getTitle() {

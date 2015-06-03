@@ -19,9 +19,6 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.NanitabeBaseActivity"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="alonedroid.com.nanitabe.MainActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

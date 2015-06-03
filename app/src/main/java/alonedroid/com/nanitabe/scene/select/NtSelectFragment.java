@@ -19,7 +19,7 @@ import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.R;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
-import alonedroid.com.nanitabe.utility.RecipePicupAdapter;
+import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
@@ -40,9 +40,9 @@ public class NtSelectFragment extends Fragment {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private RecipePicupAdapter adapter;
+    private NtSelectAdapter adapter;
 
-    private boolean mSelf = true;
+    private boolean self = true;
 
     public static NtSelectFragment newInstance() {
         NtSelectFragment_.FragmentBuilder_ builder_ = NtSelectFragment_.builder();
@@ -57,12 +57,15 @@ public class NtSelectFragment extends Fragment {
     @AfterViews
     void initViews() {
         initListData();
-        this.ntSelectList.setOnItemClickListener((parent, view, position, time) -> this.adapter.clickItem(view, position));
+        this.ntSelectList.setOnItemClickListener((parent, view, position, time) -> this.adapter.clickItem(position));
     }
 
     private void initListData() {
         List<String> keys = this.dataManager.getKeys();
-        this.adapter = new RecipePicupAdapter(getActivity(), R.layout.layout_recipe_list_row, keys);
+        List<NtRecipeItem> items = Observable.from(keys.toArray(new String[keys.size()]))
+                .map(key -> NtRecipeItem.newInstance(this.dataManager.get(key)))
+                .toList().toBlocking().single();
+        this.adapter = new NtSelectAdapter(getActivity(), R.layout.view_nt_select_item, items);
         this.ntSelectList.setAdapter(this.adapter);
     }
 
@@ -95,7 +98,7 @@ public class NtSelectFragment extends Fragment {
 
     @Click
     void ntSelectDone() {
-        if (this.mSelf) {
+        if (this.self) {
             ntSelectOpen();
         } else {
             ntSelectSend();

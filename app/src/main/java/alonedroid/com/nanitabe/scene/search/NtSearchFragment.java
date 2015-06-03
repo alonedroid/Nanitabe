@@ -2,7 +2,6 @@ package alonedroid.com.nanitabe.scene.search;
 
 import android.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -88,10 +87,8 @@ public class NtSearchFragment extends Fragment {
                     this.ntSearchFavorite.setEnabled(!existsUrl);
                     this.ntSearchFavorite.setText(existsUrl ? this.notFavorite : this.alreadyFavorite);
                 }));
-        this.compositeSubscription.add(this.webClient.getLoading().subscribe(loading -> {
-            Log.d("nanitabe", "onNext"+String.valueOf(loading));
-            this.dialog.getLoading().onNext(loading);
-        }));
+        this.compositeSubscription.add(this.webClient.getLoading()
+                .subscribe(this.dialog.getLoading()::onNext));
     }
 
     private String generateUrl() {
@@ -137,7 +134,6 @@ public class NtSearchFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.d("nanitabe", "onStop");
         this.compositeSubscription.clear();
         this.dialog.clear();
         super.onStop();

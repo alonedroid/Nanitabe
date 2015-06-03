@@ -21,7 +21,6 @@ import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.R;
 import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
-import alonedroid.com.nanitabe.utility.RecipeChoiceAdapter;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
@@ -57,7 +56,7 @@ public class NtChoiceFragment extends Fragment {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private RecipeChoiceAdapter adapter;
+    private NtChoiceAdapter adapter;
 
     private boolean isSelf = true;
 
@@ -69,8 +68,7 @@ public class NtChoiceFragment extends Fragment {
 
     @AfterInject
     void init() {
-        this.adapter = new RecipeChoiceAdapter(getActivity());
-        this.adapter.get_image(this.argRecipeIds);
+        this.adapter = new NtChoiceAdapter(getActivity(), getFragmentManager(), this.argRecipeIds);
     }
 
     @AfterViews
@@ -108,7 +106,7 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void selectedPosition(int position) {
-        this.menuName.setText(this.adapter.mTitle.get(this.argRecipeIds[position]));
+        this.adapter.setRecipeTitle(this.menuName, position);
         visibleSelectButton(position);
         Observable.range(0, this.argRecipeIds.length)
                 .filter(idx -> this.ntChoiceIndicator.getChildAt(idx) != null)

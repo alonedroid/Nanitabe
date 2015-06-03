@@ -1,0 +1,43 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dip"
+    android:background="#CF6F00"
+    >
+
+    <ImageView
+        android:id="@+id/select_image"
+        android:layout_width="50dip"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_image"
+        />
+
+    <ImageView
+        android:id="@+id/select_check"
+        android:layout_width="50dip"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/custom_btn_checkbox"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/select_title"
+        android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="2dip"
+        android:layout_marginRight="2dip"
+        android:layout_marginTop="2dip"
+        android:layout_toLeftOf="@id/select_check"
+        android:layout_toRightOf="@id/select_image"
+        android:layout_weight="1"
+        android:background="#EFEFCF"
+        android:padding="3dip"
+        android:text="back"
+        android:textColor="#000000"
+        />
+</RelativeLayout>

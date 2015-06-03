@@ -29,10 +29,6 @@ public class NtHistoryFragment extends Fragment {
     @Bean
     NtDataManager dataManager;
 
-    private NtHistoryAdapter adapter;
-
-    private boolean self = true;
-
     public static NtHistoryFragment newInstance() {
         NtHistoryFragment_.FragmentBuilder_ builder_ = NtHistoryFragment_.builder();
         return builder_.build();
@@ -46,11 +42,9 @@ public class NtHistoryFragment extends Fragment {
     private void initListData() {
         List<String> keys = this.dataManager.getHistory();
         List<NtRecipeItem> items = Observable.from(keys.toArray(new String[keys.size()]))
-                .map(this.dataManager::get)
-                .map(NtRecipeItem::newInstance)
+                .map(key -> NtRecipeItem.newInstance(this.dataManager.get(key)))
                 .toList().toBlocking().single();
 
-        this.adapter = new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items);
-        this.ntHistoryList.setAdapter(this.adapter);
+        this.ntHistoryList.setAdapter(new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items));
     }
 }

@@ -1,7 +1,5 @@
 package alonedroid.com.nanitabe.utility;
 
-import android.util.Log;
-
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -17,10 +15,6 @@ import rx.Observable;
 
 @EBean
 public class NtDataManager {
-
-    private static final String TITLE = "title";
-
-    private static final String IMAGE = "image";
 
     @Pref
     FavoriteData_ favorite;
@@ -53,8 +47,9 @@ public class NtDataManager {
 
     public void put(String url, String title, String image) throws JSONException {
         JSONObject json = simpleJson();
-        json.put(TITLE, title);
-        json.put(IMAGE, image);
+        json.put(NtRecipeItem.URL, url);
+        json.put(NtRecipeItem.TITLE, title);
+        json.put(NtRecipeItem.IMAGE, image);
         this.rootObject.put(url, json);
         save();
     }
@@ -97,12 +92,16 @@ public class NtDataManager {
         return value(this.rootObject, key);
     }
 
+    public String getUrl(String key) {
+        return value(recipe(key), NtRecipeItem.URL);
+    }
+
     public String getTitle(String key) {
-        return value(recipe(key), TITLE);
+        return value(recipe(key), NtRecipeItem.TITLE);
     }
 
     public String getImage(String key) {
-        return value(recipe(key), IMAGE);
+        return value(recipe(key), NtRecipeItem.IMAGE);
     }
 
     private JSONObject recipe(String key) {

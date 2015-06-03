@@ -13,11 +13,8 @@ import alonedroid.com.nanitabe.view.NtHistoryItemView;
 
 public class NtHistoryAdapter extends ArrayAdapter<NtRecipeItem> {
 
-    private LayoutInflater inflater;
-
     public NtHistoryAdapter(Context context, int resource, List<NtRecipeItem> list) {
         super(context, resource, list);
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
