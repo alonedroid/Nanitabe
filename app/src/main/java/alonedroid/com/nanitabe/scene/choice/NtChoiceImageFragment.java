@@ -17,7 +17,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import lombok.Getter;
 import rx.subjects.BehaviorSubject;
 

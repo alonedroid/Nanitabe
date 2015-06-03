@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 
 @EViewGroup(R.layout.view_nt_select_item)
 public class NtSelectItemView extends RelativeLayout {

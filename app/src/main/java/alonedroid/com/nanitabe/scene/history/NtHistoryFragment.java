@@ -12,7 +12,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.List;
 
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;

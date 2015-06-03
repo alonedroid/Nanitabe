@@ -5,13 +5,13 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 
-import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.res.StringRes;
 
 import lombok.Getter;
 import rx.subjects.BehaviorSubject;
 
-@EBean
+@EFragment
 public class NtDialogFragment extends DialogFragment {
 
     @StringRes
@@ -28,6 +28,11 @@ public class NtDialogFragment extends DialogFragment {
 
     @Getter
     private BehaviorSubject<Integer> which = BehaviorSubject.create(0);
+
+    public static NtDialogFragment newInstance() {
+        NtDialogFragment_.FragmentBuilder_ builder_ = NtDialogFragment_.builder();
+        return builder_.build();
+    }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())

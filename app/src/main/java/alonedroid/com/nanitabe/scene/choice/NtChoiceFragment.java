@@ -18,7 +18,7 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import rx.Observable;

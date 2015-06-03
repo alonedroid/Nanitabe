@@ -12,6 +12,7 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
+import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment_;
 import rx.Subscription;

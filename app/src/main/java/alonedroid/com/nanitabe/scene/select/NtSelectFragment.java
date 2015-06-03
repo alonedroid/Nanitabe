@@ -16,7 +16,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.List;
 
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtRecipeItem;
@@ -35,7 +35,6 @@ public class NtSelectFragment extends Fragment {
     @Bean
     NtDataManager dataManager;
 
-    @Bean
     NtDialogFragment dialog;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -70,6 +69,7 @@ public class NtSelectFragment extends Fragment {
     }
 
     private void initDialog() {
+        this.dialog = NtDialogFragment.newInstance();
         this.compositeSubscription.add(this.dialog.getWhich()
                 .filter(which -> which == DialogInterface.BUTTON_POSITIVE)
                 .subscribe(which -> dialogPositive()));

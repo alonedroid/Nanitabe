@@ -7,7 +7,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.widget.TextView;
 
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 

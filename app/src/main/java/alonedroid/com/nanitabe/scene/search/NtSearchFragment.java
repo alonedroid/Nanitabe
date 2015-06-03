@@ -17,7 +17,7 @@ import org.androidannotations.annotations.res.StringRes;
 
 import alonedroid.com.nanitabe.MainActivity;
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import rx.subscriptions.CompositeSubscription;
