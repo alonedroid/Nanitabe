@@ -3,6 +3,9 @@ package alonedroid.com.nanitabe.utility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +33,10 @@ public class NtRecipeItem {
         this.root = json(root);
     }
 
+    public NtRecipeItem(JSONObject root) {
+        this.root = root;
+    }
+
     public String getImageUrl() {
         return getValue(IMAGE);
     }
@@ -46,11 +53,28 @@ public class NtRecipeItem {
         return getValue(DATE);
     }
 
+    public void setDate() {
+        setValue(DATE, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+    }
+
     private String getValue(String str) {
         try {
             return this.root.getString(str);
         } catch (JSONException e) {
             return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.root.toString();
+    }
+
+    private void setValue(String key, String value) {
+        try {
+            this.root.put(key, value);
+        } catch (JSONException e) {
+
         }
     }
 

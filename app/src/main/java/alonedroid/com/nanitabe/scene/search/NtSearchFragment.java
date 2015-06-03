@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -14,6 +15,7 @@ import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
+import alonedroid.com.nanitabe.MainActivity;
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.R;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
@@ -21,13 +23,22 @@ import alonedroid.com.nanitabe.utility.NtDataManager;
 import rx.subscriptions.CompositeSubscription;
 
 @EFragment(R.layout.fragment_nt_search)
-public class NtSearchFragment extends Fragment {
+public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDown {
+
+    @App
+    NtApplication app;
 
     @FragmentArg
     String argQuery;
 
     @FragmentArg
     String argRecipeId;
+
+    @StringRes
+    String messageAddFavorite;
+
+    @StringRes
+    String messageRemoveFavorite;
 
     @StringRes
     String searchUrl;
@@ -83,12 +94,14 @@ public class NtSearchFragment extends Fragment {
                 .subscribe(this.ntSearchFavorite::setEnabled));
         this.compositeSubscription.add(this.webClient.getUrl()
                 .map(this.dataManager::exists)
-                .subscribe(existsUrl -> {
-                    this.ntSearchFavorite.setEnabled(!existsUrl);
-                    this.ntSearchFavorite.setText(existsUrl ? this.notFavorite : this.alreadyFavorite);
-                }));
+                .subscribe(this::setFavoriteAction));
         this.compositeSubscription.add(this.webClient.getLoading()
                 .subscribe(this.dialog.getLoading()::onNext));
+    }
+
+    private void setFavoriteAction(boolean isFavorite){
+        this.ntSearchFavorite.setSelected(isFavorite);
+        this.ntSearchFavorite.setText(isFavorite ? this.notFavorite : this.alreadyFavorite);
     }
 
     private String generateUrl() {
@@ -106,10 +119,14 @@ public class NtSearchFragment extends Fragment {
 
     @Click
     void ntSearchFavorite() {
+        setFavoriteAction(!this.dataManager.exists(this.webClient.getUrl().getValue()));
+
         if (this.dataManager.exists(this.webClient.getUrl().getValue())) {
             removeFavorite();
+            this.app.show(this.messageRemoveFavorite);
         } else {
             addFavorite();
+            this.app.show(this.messageAddFavorite);
         }
     }
 
@@ -153,5 +170,14 @@ public class NtSearchFragment extends Fragment {
         this.ntSearchWeb.destroy();
         this.ntSearchWeb = null;
         super.onDestroy();
+    }
+
+    @Override
+    public boolean goBack() {
+        if (this.ntSearchWeb.canGoBack()) {
+            this.ntSearchWeb.goBack();
+            return true;
+        }
+        return false;
     }
 }

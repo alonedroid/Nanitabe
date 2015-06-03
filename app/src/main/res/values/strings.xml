@@ -13,5 +13,7 @@
     <string name="dialog_positive">はい</string>
     <string name="dialog_negative">いいえ</string>
     <string name="loading">取得中...</string>
+    <string name="message_add_favorite">お気に入りに登録しました</string>
+    <string name="message_remove_favorite">お気に入りから削除しました</string>
 
 </resources>

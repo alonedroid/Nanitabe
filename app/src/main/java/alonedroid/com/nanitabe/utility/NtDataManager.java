@@ -1,5 +1,7 @@
 package alonedroid.com.nanitabe.utility;
 
+import android.util.Log;
+
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -13,7 +15,7 @@ import java.util.List;
 import alonedroid.com.nanitabe.sharedpreference.FavoriteData_;
 import rx.Observable;
 
-@EBean
+@EBean(scope = EBean.Scope.Singleton)
 public class NtDataManager {
 
     @Pref
@@ -39,7 +41,9 @@ public class NtDataManager {
 
     public void addHistory(String url) {
         try {
-            this.historyObject.put(url, this.rootObject.getJSONObject(url));
+            NtRecipeItem item = new NtRecipeItem(this.rootObject.getJSONObject(url));
+            item.setDate();
+            this.historyObject.put(item.getDate() + url, item.toString());
             saveHistory();
         } catch (JSONException e) {
         }
@@ -52,6 +56,7 @@ public class NtDataManager {
         json.put(NtRecipeItem.IMAGE, image);
         this.rootObject.put(url, json);
         save();
+        Log.d("put", url);
     }
 
     public void remove(String url) {
@@ -60,6 +65,7 @@ public class NtDataManager {
     }
 
     public boolean exists(String url) {
+        Log.d("check", url);
         return this.rootObject.has(url);
     }
 
@@ -90,6 +96,10 @@ public class NtDataManager {
 
     public String get(String key) {
         return value(this.rootObject, key);
+    }
+
+    public String getHistory(String key) {
+        return value(this.historyObject, key);
     }
 
     public String getUrl(String key) {

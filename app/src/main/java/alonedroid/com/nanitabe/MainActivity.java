@@ -2,6 +2,7 @@ package alonedroid.com.nanitabe;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -39,8 +40,8 @@ public class MainActivity extends Activity {
 
     private void replaceFragment(Fragment fragment) {
         String tag = tag(fragment);
-        if (needBack(tag)) {
-            getFragmentManager().popBackStack(tag, 0);
+        if (secondTimeTop(tag)) {
+            reset();
         } else if (fragment instanceof NtTopFragment_) {
             replace(fragment, false);
         } else {
@@ -52,6 +53,12 @@ public class MainActivity extends Activity {
         return fragment.getClass().getSimpleName();
     }
 
+    private void reset() {
+        int firstId = getFragmentManager().getBackStackEntryAt(0).getId();
+        getFragmentManager()
+                .popBackStack(firstId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
     private void replace(Fragment fragment, boolean stack) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if (stack) {
@@ -61,11 +68,9 @@ public class MainActivity extends Activity {
                 .commit();
     }
 
-    private boolean needBack(String tag) {
-        int checkIndex = getFragmentManager().getBackStackEntryCount() - 1;
-        if (checkIndex < 0) return false;
-        String checkTag = getFragmentManager().getBackStackEntryAt(checkIndex).getName();
-        return tag.equals(checkTag);
+    private boolean secondTimeTop(String tag) {
+        if (getFragmentManager().getBackStackEntryCount() <= 0) return false;
+        return tag.equals(NtTopFragment_.class.getSimpleName());
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -73,7 +78,9 @@ public class MainActivity extends Activity {
 
         Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
         if (fragment instanceof NtOnKeyDown) {
-            return ((NtOnKeyDown) fragment).goBack();
+            if (((NtOnKeyDown) fragment).goBack()) {
+                return false;
+            }
         }
 
         return super.onKeyDown(keyCode, event);

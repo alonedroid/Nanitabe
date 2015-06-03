@@ -42,7 +42,7 @@ public class NtHistoryFragment extends Fragment {
     private void initListData() {
         List<String> keys = this.dataManager.getHistory();
         List<NtRecipeItem> items = Observable.from(keys.toArray(new String[keys.size()]))
-                .map(key -> NtRecipeItem.newInstance(this.dataManager.get(key)))
+                .map(key -> NtRecipeItem.newInstance(this.dataManager.getHistory(key)))
                 .toList().toBlocking().single();
 
         this.ntHistoryList.setAdapter(new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items));
