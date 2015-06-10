@@ -1,7 +1,6 @@
 package alonedroid.com.nanitabe.scene.history;
 
 import android.app.Fragment;
-import android.util.Log;
 import android.widget.GridView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -9,6 +8,7 @@ import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
 
 import java.util.List;
 
@@ -42,14 +42,14 @@ public class NtHistoryFragment extends Fragment {
     }
 
     private void initListData() {
-        List<String> keys = this.dataManager.getHistory();
-        List<NtRecipeItem> items = Observable.from(keys.toArray(new String[keys.size()]))
-                .map(key -> NtRecipeItem.newInstance(this.dataManager.getHistory(key)))
-                .toList().toBlocking().single();
-
-        NtHistoryAdapter adapter = new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items);
-        adapter.setOnItemClickListener(this::openUrl);
-        this.ntHistoryList.setAdapter(adapter);
+        try {
+            List<NtRecipeItem> items = this.dataManager.table(NtDataManager.TABLE.HISTORY).selectAll();
+            NtHistoryAdapter adapter = new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items);
+            adapter.setOnItemClickListener(this::openUrl);
+            this.ntHistoryList.setAdapter(adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void openUrl(String url) {

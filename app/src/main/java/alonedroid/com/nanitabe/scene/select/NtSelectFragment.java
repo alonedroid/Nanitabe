@@ -5,13 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.widget.GridView;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
 
 import java.util.List;
 
@@ -56,12 +56,13 @@ public class NtSelectFragment extends Fragment {
     }
 
     private void initListData() {
-        List<String> keys = this.dataManager.getKeys();
-        List<NtRecipeItem> items = Observable.from(keys.toArray(new String[keys.size()]))
-                .map(key -> NtRecipeItem.newInstance(this.dataManager.get(key)))
-                .toList().toBlocking().single();
-        this.adapter = new NtSelectAdapter(getActivity(), R.layout.view_nt_select_item, items);
-        this.ntSelectList.setAdapter(this.adapter);
+        try {
+            List<NtRecipeItem> items = this.dataManager.table(NtDataManager.TABLE.FAVORITE).selectAll();
+            this.adapter = new NtSelectAdapter(getActivity(), R.layout.view_nt_select_item, items);
+            this.ntSelectList.setAdapter(this.adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initDialog() {
@@ -73,9 +74,17 @@ public class NtSelectFragment extends Fragment {
 
     private void dialogPositive() {
         Observable.from(this.adapter.getSelectedItems())
-                .subscribe(this.dataManager::remove,
+                .subscribe(this::removeFavorite,
                         this::onError,
                         this::onComplete);
+    }
+
+    private void removeFavorite(String key) {
+        try {
+            this.dataManager.table(NtDataManager.TABLE.FAVORITE).delete(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void onError(Throwable t) {

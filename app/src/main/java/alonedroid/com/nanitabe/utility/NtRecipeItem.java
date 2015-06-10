@@ -53,7 +53,7 @@ public class NtRecipeItem {
         return getValue(DATE);
     }
 
-    public void setDate() {
+    public void addDate() {
         setValue(DATE, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
     }
 

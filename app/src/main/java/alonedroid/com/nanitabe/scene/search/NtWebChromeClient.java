@@ -39,7 +39,8 @@ public class NtWebChromeClient extends WebChromeClient {
             String img = prms[1];
             String key = prms[2];
 
-            this.dataManager.put(key, title, img);
+            this.dataManager.table(NtDataManager.TABLE.FAVORITE)
+                    .insert(key, title, img);
         } catch (JSONException e) {
             e.printStackTrace();
         }

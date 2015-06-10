@@ -14,6 +14,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
+import org.json.JSONException;
 
 import alonedroid.com.nanitabe.MainActivity;
 import alonedroid.com.nanitabe.NtApplication;
@@ -55,6 +56,9 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
     @StringRes
     String alreadyFavorite;
 
+    @StringRes
+    String error;
+
     @ViewById
     WebView ntSearchWeb;
 
@@ -84,6 +88,12 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     @AfterViews
     void initViews() {
+        try {
+            this.dataManager.table(NtDataManager.TABLE.FAVORITE);
+        } catch (JSONException e) {
+            this.app.show(this.error);
+            getActivity().finish();
+        }
         initSubject();
         initWebView(generateUrl());
     }
@@ -99,7 +109,7 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
                 .subscribe(this.dialog.getLoading()::onNext));
     }
 
-    private void setFavoriteActionImage(boolean isFavorite){
+    private void setFavoriteActionImage(boolean isFavorite) {
         this.ntSearchFavorite.setSelected(isFavorite);
         this.ntSearchFavorite.setText(isFavorite ? this.notFavorite : this.alreadyFavorite);
     }
@@ -142,7 +152,12 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
     }
 
     private void removeFavorite() {
-        this.dataManager.remove(this.webClient.getUrl().getValue());
+        try {
+            this.dataManager.table(NtDataManager.TABLE.FAVORITE)
+                    .delete(this.webClient.getUrl().getValue());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Click

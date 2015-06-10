@@ -16,6 +16,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
+import org.json.JSONException;
 
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
@@ -153,8 +154,13 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void decideMenuOpen() {
-        this.dataManager.addHistory(this.recipeUrl + this.argRecipeIds[this.ntRecipePager.getCurrentItem()]);
-        NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, this.argRecipeIds[this.ntRecipePager.getCurrentItem()]));
+        try {
+            this.dataManager.table(NtDataManager.TABLE.HISTORY)
+                    .log(this.recipeUrl + this.argRecipeIds[this.ntRecipePager.getCurrentItem()]);
+            NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, this.argRecipeIds[this.ntRecipePager.getCurrentItem()]));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void decideMenuSend() {
