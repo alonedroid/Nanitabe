@@ -48,13 +48,9 @@ public class NtSelectFragment extends Fragment {
         return builder_.build();
     }
 
-    @AfterInject
-    void init() {
-        initDialog();
-    }
-
     @AfterViews
     void initViews() {
+        initDialog();
         initListData();
         this.ntSelectList.setOnItemClickListener((parent, view, position, time) -> this.adapter.clickItem(position));
     }

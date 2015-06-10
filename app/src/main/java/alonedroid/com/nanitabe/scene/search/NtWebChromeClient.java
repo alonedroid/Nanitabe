@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.res.StringRes;
 import org.json.JSONException;
 
 import alonedroid.com.nanitabe.utility.NtDataManager;
@@ -18,6 +19,9 @@ public class NtWebChromeClient extends WebChromeClient {
 
     @RootContext
     Context context;
+
+    @StringRes
+    String topUrl;
 
     NtDataManager dataManager;
 
@@ -33,8 +37,9 @@ public class NtWebChromeClient extends WebChromeClient {
             String[] prms = message.split(",");
             String title = prms[0].split("by")[0].trim();
             String img = prms[1];
+            String key = prms[2];
 
-            this.dataManager.put(url, title, img);
+            this.dataManager.put(key, title, img);
         } catch (JSONException e) {
             e.printStackTrace();
         }

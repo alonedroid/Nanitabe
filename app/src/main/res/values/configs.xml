@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="image_url">http://img.cpcdn.com</string>
     <string name="top_url">http://cookpad.com</string>
     <string name="search_url">http://cookpad.com/search/</string>
     <string name="recipe_url">http://cookpad.com/recipe/</string>

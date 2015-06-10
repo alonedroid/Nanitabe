@@ -115,13 +115,17 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void visibleSelectButton(int position) {
+        int nextButtonView = View.VISIBLE;
+        int prevButtonView = View.VISIBLE;
+
         if (position == 0) {
-            visibleNextPrev(View.VISIBLE, View.INVISIBLE);
-        } else if (this.argRecipeIds.length - 1 <= position) {
-            visibleNextPrev(View.INVISIBLE, View.VISIBLE);
-        } else {
-            visibleNextPrev(View.VISIBLE, View.VISIBLE);
+            prevButtonView = View.INVISIBLE;
         }
+        if (this.argRecipeIds.length - 1 <= position) {
+            nextButtonView = View.INVISIBLE;
+        }
+
+        visibleNextPrev(nextButtonView, prevButtonView);
     }
 
     private void visibleNextPrev(int visibleNext, int visiblePrev) {
@@ -149,7 +153,7 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void decideMenuOpen() {
-        this.dataManager.addHistory("http://cookpad.com/recipe/" + this.argRecipeIds[this.ntRecipePager.getCurrentItem()]);
+        this.dataManager.addHistory(this.recipeUrl + this.argRecipeIds[this.ntRecipePager.getCurrentItem()]);
         NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, this.argRecipeIds[this.ntRecipePager.getCurrentItem()]));
     }
 

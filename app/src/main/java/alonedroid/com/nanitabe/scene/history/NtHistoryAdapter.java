@@ -13,6 +13,8 @@ import alonedroid.com.nanitabe.view.NtHistoryItemView;
 
 public class NtHistoryAdapter extends ArrayAdapter<NtRecipeItem> {
 
+    private OnItemClickListener callback;
+
     public NtHistoryAdapter(Context context, int resource, List<NtRecipeItem> list) {
         super(context, resource, list);
     }
@@ -29,7 +31,17 @@ public class NtHistoryAdapter extends ArrayAdapter<NtRecipeItem> {
         view.setImage(recipe.getImageUrl());
         view.setTitle(recipe.getTitle());
         view.setDate(recipe.getDate());
+        view.setTag(recipe.getUrl());
+        view.setOnClickListener(clickView -> this.callback.onClick(String.valueOf(clickView.getTag())));
 
         return view;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener callback){
+        this.callback = callback;
+    }
+
+    public interface OnItemClickListener {
+        void onClick(String url);
     }
 }

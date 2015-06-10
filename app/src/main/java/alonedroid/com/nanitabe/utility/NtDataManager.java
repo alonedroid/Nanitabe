@@ -1,7 +1,5 @@
 package alonedroid.com.nanitabe.utility;
 
-import android.util.Log;
-
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -56,7 +54,6 @@ public class NtDataManager {
         json.put(NtRecipeItem.IMAGE, image);
         this.rootObject.put(url, json);
         save();
-        Log.d("put", url);
     }
 
     public void remove(String url) {
@@ -65,7 +62,6 @@ public class NtDataManager {
     }
 
     public boolean exists(String url) {
-        Log.d("check", url);
         return this.rootObject.has(url);
     }
 

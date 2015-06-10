@@ -1,6 +1,7 @@
 package alonedroid.com.nanitabe.scene.history;
 
 import android.app.Fragment;
+import android.util.Log;
 import android.widget.GridView;
 
 import org.androidannotations.annotations.AfterViews;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;
@@ -45,6 +47,14 @@ public class NtHistoryFragment extends Fragment {
                 .map(key -> NtRecipeItem.newInstance(this.dataManager.getHistory(key)))
                 .toList().toBlocking().single();
 
-        this.ntHistoryList.setAdapter(new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items));
+        NtHistoryAdapter adapter = new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items);
+        adapter.setOnItemClickListener(this::openUrl);
+        this.ntHistoryList.setAdapter(adapter);
+    }
+
+    private void openUrl(String url) {
+        String id = Observable.from(url.split("/"))
+                .last().toBlocking().single();
+        NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, id));
     }
 }

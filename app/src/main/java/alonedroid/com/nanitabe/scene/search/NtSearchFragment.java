@@ -94,12 +94,12 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
                 .subscribe(this.ntSearchFavorite::setEnabled));
         this.compositeSubscription.add(this.webClient.getUrl()
                 .map(this.dataManager::exists)
-                .subscribe(this::setFavoriteAction));
+                .subscribe(this::setFavoriteActionImage));
         this.compositeSubscription.add(this.webClient.getLoading()
                 .subscribe(this.dialog.getLoading()::onNext));
     }
 
-    private void setFavoriteAction(boolean isFavorite){
+    private void setFavoriteActionImage(boolean isFavorite){
         this.ntSearchFavorite.setSelected(isFavorite);
         this.ntSearchFavorite.setText(isFavorite ? this.notFavorite : this.alreadyFavorite);
     }
@@ -119,7 +119,7 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     @Click
     void ntSearchFavorite() {
-        setFavoriteAction(!this.dataManager.exists(this.webClient.getUrl().getValue()));
+        setFavoriteActionImage(!this.dataManager.exists(this.webClient.getUrl().getValue()));
 
         if (this.dataManager.exists(this.webClient.getUrl().getValue())) {
             removeFavorite();
@@ -134,7 +134,8 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
         StringBuilder sb = new StringBuilder();
         sb.append("javascript:alert(")
                 .append("document.querySelector('.recipe_title').innerText").append("+','+")
-                .append("document.querySelector('.photo').src")
+                .append("document.querySelector('.photo').src").append("+','+")
+                .append("location.href")
                 .append(");");
 
         this.ntSearchWeb.loadUrl(sb.toString());
