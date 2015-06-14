@@ -16,5 +16,6 @@
     <string name="message_add_favorite">お気に入りに登録しました</string>
     <string name="message_remove_favorite">お気に入りから削除しました</string>
     <string name="error">問題が発生したためアプリを終了します。</string>
-
+    <string name="search">Search</string>
+    <string name="ura_search">裏Search</string>
 </resources>

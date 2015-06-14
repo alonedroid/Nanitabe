@@ -7,7 +7,7 @@
     tools:context="alonedroid.com.nanitabe.view.NtHistoryItemView_"
     >
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/history_image"
         android:layout_width="50dip"
         android:layout_height="50dip"

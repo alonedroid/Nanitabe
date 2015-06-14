@@ -3,6 +3,8 @@
     <string name="image_url">http://img.cpcdn.com</string>
     <string name="top_url">http://cookpad.com</string>
     <string name="search_url">http://cookpad.com/search/</string>
+    <string name="tsukurepo_url">http://cookpad.com/recipe/$1/tsukurepos/</string>
     <string name="recipe_url">http://cookpad.com/recipe/</string>
     <string name="error_url">file:///android_res/raw/networkerror.html</string>
+    <string name="paging_attr"><![CDATA[\?page=%1$d&recipe_hit=%2$d]]></string>
 </resources>

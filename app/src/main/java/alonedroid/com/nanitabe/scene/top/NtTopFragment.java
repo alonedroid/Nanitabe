@@ -12,6 +12,7 @@ import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.history.NtHistoryFragment;
 import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.scene.select.NtSelectFragment;
+import alonedroid.com.nanitabe.scene.uratop.NtUraTopFragment;
 
 @EFragment(R.layout.fragment_nt_top)
 public class NtTopFragment extends Fragment {
@@ -22,6 +23,11 @@ public class NtTopFragment extends Fragment {
     public static NtTopFragment newInstance() {
         NtTopFragment_.FragmentBuilder_ builder_ = NtTopFragment_.builder();
         return builder_.build();
+    }
+
+    @Click
+    void modeChange() {
+        NtApplication.getRouter().onNext(NtUraTopFragment.newInstance());
     }
 
     @Click

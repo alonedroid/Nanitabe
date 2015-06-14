@@ -7,13 +7,16 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import alonedroid.com.nanitabe.activity.R;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class NtChoiceAdapter extends FragmentStatePagerAdapter {
 
-    private String[] proposeRecipes;
+    private ArrayList<String> proposeRecipes;
 
     private SparseArray<NtChoiceImageFragment> fragments = new SparseArray<>();
 
@@ -21,15 +24,15 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
 
     private Subscription titleSubscription;
 
-    public NtChoiceAdapter(Context context, FragmentManager fm, String[] urls) {
+    public NtChoiceAdapter(Context context, FragmentManager fm, List<String> urls) {
         super(fm);
-        this.proposeRecipes = urls;
+        this.proposeRecipes = new ArrayList<>(urls);
     }
 
     @Override
     public Fragment getItem(int position) {
         if (this.fragments.get(position) == null) {
-            this.fragments.put(position, NtChoiceImageFragment.newInstance(this.proposeRecipes[position]));
+            this.fragments.put(position, NtChoiceImageFragment.newInstance(this.proposeRecipes.get(position)));
         }
 
         if (this.titleSubscription == null) {
@@ -41,7 +44,7 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return this.proposeRecipes.length;
+        return this.proposeRecipes.size();
     }
 
     public void setRecipeTitle(TextView title, int position) {
@@ -57,6 +60,11 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    public String getId(int position) {
+        if (this.proposeRecipes.size() <= position) return "";
+        return this.proposeRecipes.get(position);
+    }
+
     private void promise(NtChoiceImageFragment fragment) {
         if (this.titleSubscription != null) {
             this.titleSubscription.unsubscribe();
@@ -64,5 +72,10 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
         this.titleSubscription = fragment.getTitle()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this.titleView::setText);
+    }
+
+    public void addItem(String recipe) {
+        this.proposeRecipes.add(recipe);
+        notifyDataSetChanged();
     }
 }

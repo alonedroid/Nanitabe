@@ -2,14 +2,19 @@ package alonedroid.com.nanitabe.scene.choice;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ClearCacheRequest;
+
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
@@ -18,11 +23,16 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 import org.json.JSONException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Arrays;
+
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 @EFragment(R.layout.fragment_nt_choice)
@@ -31,8 +41,20 @@ public class NtChoiceFragment extends Fragment {
     @FragmentArg
     String[] argRecipeIds;
 
+    @FragmentArg
+    String argRecipeQuery;
+
+    @App
+    NtApplication app;
+
     @StringRes
     String recipeUrl;
+
+    @StringRes
+    String searchUrl;
+
+    @StringRes
+    String tsukurepoUrl;
 
     @ViewById
     TextView menuName;
@@ -55,11 +77,22 @@ public class NtChoiceFragment extends Fragment {
     @Bean
     NtOnPageChangeListener changeListener;
 
+    @Bean
+    NtTsukurepoAnalyzer analyzer;
+
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private NtChoiceAdapter adapter;
 
     private boolean isSelf = true;
+
+    private DataSetObserver dataSetObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            addIndicator(NtChoiceFragment.this.adapter.getCount() == 1);
+        }
+    };
 
     public static NtChoiceFragment newInstance(String[] ids) {
         NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
@@ -67,9 +100,18 @@ public class NtChoiceFragment extends Fragment {
         return builder_.build();
     }
 
+    public static NtChoiceFragment newInstance(String query) {
+        NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
+        builder_.argRecipeIds(new String[0]);
+        builder_.argRecipeQuery(query);
+        return builder_.build();
+    }
+
     @AfterInject
     void init() {
-        this.adapter = new NtChoiceAdapter(getActivity(), getFragmentManager(), this.argRecipeIds);
+        this.adapter = new NtChoiceAdapter(getActivity(), getFragmentManager(), Arrays.asList(this.argRecipeIds));
+        this.adapter.registerDataSetObserver(this.dataSetObserver);
+        uraSearch(this.argRecipeQuery);
     }
 
     @AfterViews
@@ -82,7 +124,15 @@ public class NtChoiceFragment extends Fragment {
     @Override
     public void onStop() {
         this.compositeSubscription.clear();
+        this.analyzer.cancel();
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        this.adapter.unregisterDataSetObserver(this.dataSetObserver);
+        this.adapter = null;
+        super.onDestroy();
     }
 
     private void initPager() {
@@ -93,7 +143,7 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void initIndicator() {
-        Observable.range(0, this.argRecipeIds.length)
+        Observable.range(0, this.adapter.getCount())
                 .subscribe(idx -> addIndicator(0 == idx))
                 .unsubscribe();
     }
@@ -109,7 +159,7 @@ public class NtChoiceFragment extends Fragment {
     private void selectedPosition(int position) {
         this.adapter.setRecipeTitle(this.menuName, position);
         visibleSelectButton(position);
-        Observable.range(0, this.argRecipeIds.length)
+        Observable.range(0, this.adapter.getCount())
                 .filter(idx -> this.ntChoiceIndicator.getChildAt(idx) != null)
                 .subscribe(idx -> this.ntChoiceIndicator.getChildAt(idx).setEnabled(idx == position))
                 .unsubscribe();
@@ -154,10 +204,14 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void decideMenuOpen() {
+        String id = this.adapter.getId(this.ntRecipePager.getCurrentItem());
+        if (TextUtils.isEmpty(id)) return;
         try {
-            this.dataManager.table(NtDataManager.TABLE.HISTORY)
-                    .log(this.recipeUrl + this.argRecipeIds[this.ntRecipePager.getCurrentItem()]);
-            NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, this.argRecipeIds[this.ntRecipePager.getCurrentItem()]));
+            if (TextUtils.isEmpty(this.argRecipeQuery)) {
+                this.dataManager.table(NtDataManager.TABLE.HISTORY)
+                        .log(this.recipeUrl + id);
+            }
+            NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, id));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -170,5 +224,23 @@ public class NtChoiceFragment extends Fragment {
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "今日のごはん");
         startActivity(Intent.createChooser(intent, "共有に使用するアプリを選択してください。"));
+    }
+
+    private void uraSearch(String query) {
+        if (TextUtils.isEmpty(query)) return;
+
+        this.analyzer.getSubject()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this.adapter::addItem);
+        this.analyzer.analyze(this.searchUrl + encode(query));
+    }
+
+    private String encode(String query) {
+        try {
+            String encode = "UTF-8";
+            return URLEncoder.encode(query, encode);
+        } catch (UnsupportedEncodingException e) {
+            return query;
+        }
     }
 }

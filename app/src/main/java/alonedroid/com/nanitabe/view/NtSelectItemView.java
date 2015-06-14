@@ -5,18 +5,26 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
+import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.scene.choice.ImageLruCache;
 
 @EViewGroup(R.layout.view_nt_select_item)
 public class NtSelectItemView extends RelativeLayout {
 
+    @App
+    NtApplication app;
+
     @ViewById
-    ImageView selectImage;
+    NetworkImageView selectImage;
 
     @ViewById
     TextView selectTitle;
@@ -37,7 +45,7 @@ public class NtSelectItemView extends RelativeLayout {
     }
 
     public void setImage(String imageUrl) {
-        Glide.with(getContext()).load(imageUrl).into(this.selectImage);
+        this.selectImage.setImageUrl(imageUrl, new ImageLoader(this.app.getQueue(), new ImageLruCache()));
     }
 
     public void setTitle(String title) {

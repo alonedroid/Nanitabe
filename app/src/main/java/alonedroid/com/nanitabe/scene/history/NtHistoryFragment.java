@@ -10,6 +10,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 
+import java.util.Collections;
 import java.util.List;
 
 import alonedroid.com.nanitabe.NtApplication;
@@ -44,6 +45,7 @@ public class NtHistoryFragment extends Fragment {
     private void initListData() {
         try {
             List<NtRecipeItem> items = this.dataManager.table(NtDataManager.TABLE.HISTORY).selectAll();
+            Collections.sort(items, (before, after) -> (after.getDate().compareTo(before.getDate())));
             NtHistoryAdapter adapter = new NtHistoryAdapter(getActivity(), R.layout.view_nt_history_item, items);
             adapter.setOnItemClickListener(this::openUrl);
             this.ntHistoryList.setAdapter(adapter);

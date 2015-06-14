@@ -1,22 +1,28 @@
 package alonedroid.com.nanitabe.view;
 
 import android.content.Context;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
+import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.scene.choice.ImageLruCache;
 
 @EViewGroup(R.layout.view_nt_history_item)
 public class NtHistoryItemView extends RelativeLayout {
 
+    @App
+    NtApplication app;
+
     @ViewById
-    ImageView historyImage;
+    NetworkImageView historyImage;
 
     @ViewById
     TextView historyTitle;
@@ -38,7 +44,7 @@ public class NtHistoryItemView extends RelativeLayout {
     }
 
     public void setImage(String imageUrl) {
-        Glide.with(getContext()).load(imageUrl).into(this.historyImage);
+        this.historyImage.setImageUrl(imageUrl, new ImageLoader(this.app.getQueue(), new ImageLruCache()));
     }
 
     public void setTitle(String title) {

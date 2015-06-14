@@ -5,7 +5,7 @@
     android:background="#CF6F00"
     >
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/select_image"
         android:layout_width="50dip"
         android:layout_height="match_parent"

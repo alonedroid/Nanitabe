@@ -10,6 +10,7 @@ import android.view.Window;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
 
 import alonedroid.com.nanitabe.activity.R;
@@ -20,6 +21,9 @@ import rx.Subscription;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends Activity {
 
+    @App
+    NtApplication app;
+
     Subscription routerSubscribe;
 
     @Override
@@ -27,7 +31,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
-
 
     @AfterInject
     void init() {
@@ -37,6 +40,18 @@ public class MainActivity extends Activity {
     @AfterViews
     void initViews() {
         NtApplication.getRouter().onNext(NtTopFragment.newInstance());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.app.start();
+    }
+
+    @Override
+    protected void onStop() {
+        this.app.stop();
+        super.onStop();
     }
 
     private void replaceFragment(Fragment fragment) {
