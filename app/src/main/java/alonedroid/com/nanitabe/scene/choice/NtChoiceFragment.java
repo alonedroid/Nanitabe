@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ClearCacheRequest;
-
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
@@ -154,6 +152,7 @@ public class NtChoiceFragment extends Fragment {
         view.setPadding(10, 0, 10, 0);
         view.setEnabled(on);
         this.ntChoiceIndicator.addView(view);
+        selectedPosition(this.ntRecipePager.getCurrentItem());
     }
 
     private void selectedPosition(int position) {
@@ -172,7 +171,7 @@ public class NtChoiceFragment extends Fragment {
         if (position == 0) {
             prevButtonView = View.INVISIBLE;
         }
-        if (this.argRecipeIds.length - 1 <= position) {
+        if (this.adapter.getCount() - 1 <= position) {
             nextButtonView = View.INVISIBLE;
         }
 
