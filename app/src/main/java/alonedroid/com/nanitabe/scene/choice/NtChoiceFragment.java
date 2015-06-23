@@ -237,7 +237,9 @@ public class NtChoiceFragment extends Fragment {
     private String encode(String query) {
         try {
             String encode = "UTF-8";
-            return URLEncoder.encode(query, encode);
+            String encodeStr = URLEncoder.encode(query, encode);
+            encodeStr = encodeStr.replace("+", "%20");
+            return encodeStr;
         } catch (UnsupportedEncodingException e) {
             return query;
         }
