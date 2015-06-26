@@ -17,18 +17,18 @@ import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 import org.json.JSONException;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
+import alonedroid.com.nanitabe.utility.NtTextUtility;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -42,8 +42,14 @@ public class NtChoiceFragment extends Fragment {
     @FragmentArg
     String argRecipeQuery;
 
+    @FragmentArg
+    boolean argRecipeNoLog;
+
     @App
     NtApplication app;
+
+    @StringRes
+    String noRecipes;
 
     @StringRes
     String recipeUrl;
@@ -93,8 +99,13 @@ public class NtChoiceFragment extends Fragment {
     };
 
     public static NtChoiceFragment newInstance(String[] ids) {
+        return newInstance(ids, false);
+    }
+
+    public static NtChoiceFragment newInstance(String[] ids, boolean noLogFlg) {
         NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
         builder_.argRecipeIds(ids);
+        builder_.argRecipeNoLog(noLogFlg);
         return builder_.build();
     }
 
@@ -206,7 +217,7 @@ public class NtChoiceFragment extends Fragment {
         String id = this.adapter.getId(this.ntRecipePager.getCurrentItem());
         if (TextUtils.isEmpty(id)) return;
         try {
-            if (TextUtils.isEmpty(this.argRecipeQuery)) {
+            if (TextUtils.isEmpty(this.argRecipeQuery) && !this.argRecipeNoLog) {
                 this.dataManager.table(NtDataManager.TABLE.HISTORY)
                         .log(this.recipeUrl + id);
             }
@@ -231,17 +242,15 @@ public class NtChoiceFragment extends Fragment {
         this.analyzer.getSubject()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this.adapter::addItem);
-        this.analyzer.analyze(this.searchUrl + encode(query));
+        this.analyzer.analyze(this.searchUrl + NtTextUtility.encode(query));
+        this.analyzer.getComplete()
+                .subscribe(isComplete -> checkRecipes());
     }
 
-    private String encode(String query) {
-        try {
-            String encode = "UTF-8";
-            String encodeStr = URLEncoder.encode(query, encode);
-            encodeStr = encodeStr.replace("+", "%20");
-            return encodeStr;
-        } catch (UnsupportedEncodingException e) {
-            return query;
+    @UiThread
+    void checkRecipes() {
+        if (this.adapter.getCount() == 0) {
+            this.menuName.setText(this.noRecipes);
         }
     }
 }

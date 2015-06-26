@@ -4,27 +4,47 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Window;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 
 import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment_;
+import alonedroid.com.nanitabe.service.urasearch.UraSearchService;
+import alonedroid.com.nanitabe.sharedpreference.NtServicePreference;
 import rx.Subscription;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends Activity {
 
+    @Extra
+    String argRecipes;
+
+    @Extra
+    String argQuery;
+
     @App
     NtApplication app;
 
+    @Bean
+    NtServicePreference sharedPreference;
+
     Subscription routerSubscribe;
+
+    public static Intent newIntent(Context context, String query) {
+        return new MainActivity_.IntentBuilder_(context).argQuery(query).get();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,36 +52,50 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
-    @AfterInject
-    void init() {
-        this.routerSubscribe = NtApplication.getRouter().subscribe(this::replaceFragment);
-    }
-
     @AfterViews
     void initViews() {
-        NtApplication.getRouter().onNext(NtTopFragment.newInstance());
+        if (TextUtils.isEmpty(this.argQuery) || TextUtils.isEmpty(this.sharedPreference.getRecipes(this.argQuery))) {
+            NtApplication.getRouter().onNext(NtTopFragment.newInstance());
+        } else {
+            UraSearchService.forceStop();
+            NtApplication.getRouter().onNext(NtChoiceFragment.newInstance(this.sharedPreference.getRecipes(this.argQuery).split(","), true));
+        }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        this.argQuery = intent.getStringExtra("argQuery");
+        initViews();
+    }
+
+    @Override
+    protected void onResume() {
+        this.routerSubscribe = NtApplication.getMainRouter()
+                .filter(fragment -> fragment != null)
+                .subscribe(this::replaceFragment);
+        super.onResume();
         this.app.start();
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
+        this.routerSubscribe.unsubscribe();
         this.app.stop();
-        super.onStop();
+        super.onPause();
     }
 
     private void replaceFragment(Fragment fragment) {
         String tag = tag(fragment);
+
         if (secondTimeTop(tag)) {
             reset();
         } else if (fragment instanceof NtTopFragment_) {
             replace(fragment, false);
-        } else {
+        } else if (TextUtils.isEmpty(this.argRecipes) && TextUtils.isEmpty(this.argQuery)) {
             replace(fragment, true);
+        } else {
+            replace(fragment, false);
         }
     }
 
@@ -104,11 +138,5 @@ public class MainActivity extends Activity {
 
     public interface NtOnKeyDown {
         boolean goBack();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        this.routerSubscribe.unsubscribe();
     }
 }

@@ -31,4 +31,16 @@
         android:background="@drawable/search"
         android:clickable="true"
         />
+
+    <TextView
+        android:id="@+id/nt_top_uramulti"
+        android:layout_width="@dimen/default_view_height"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_below="@id/nt_top_urasearch_text"
+        android:layout_marginLeft="@dimen/dimen_space_48dp"
+        android:background="@drawable/custom_oval_button"
+        android:gravity="center"
+        android:text="マルチ"
+        android:textColor="@color/white_300"
+        />
 </RelativeLayout>

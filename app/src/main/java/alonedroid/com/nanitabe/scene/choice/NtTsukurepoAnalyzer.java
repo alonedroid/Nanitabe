@@ -53,6 +53,9 @@ public class NtTsukurepoAnalyzer {
     @Getter
     PublishSubject<String> subject = PublishSubject.create();
 
+    @Getter
+    PublishSubject<Boolean> complete = PublishSubject.create();
+
     private String queryUrl;
 
     private int maxPage;
@@ -70,7 +73,8 @@ public class NtTsukurepoAnalyzer {
         Observable.range(1, this.maxPage)
                 .filter(index -> !this.cancel)
                 .map(this::generateUrl)
-                .subscribe(this::analyzePage);
+                .subscribe(this::analyzePage, this::onError, () -> this.complete.onNext(true))
+                .unsubscribe();
     }
 
     private String generateUrl(int index) {
@@ -126,5 +130,9 @@ public class NtTsukurepoAnalyzer {
 
     public void cancel() {
         this.cancel = true;
+    }
+
+    public void onError(Throwable throwable) {
+
     }
 }

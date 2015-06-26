@@ -14,20 +14,28 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EApplication;
 import org.androidannotations.annotations.UiThread;
 
 import lombok.Getter;
+import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 @EApplication
 public class NtApplication extends Application {
 
     @Getter
-    private static PublishSubject<Fragment> router = PublishSubject.create();
+    private static PublishSubject<Fragment> mainRouter = PublishSubject.create();
+
+    @Getter
+    private static BehaviorSubject<Fragment> router = BehaviorSubject.create();
 
     @Getter
     private RequestQueue queue;
+
+    private Subscription routerSubscription;
 
     Toast toast;
 
@@ -43,12 +51,17 @@ public class NtApplication extends Application {
         this.queue = Volley.newRequestQueue(this);
     }
 
+    @Background
     public void start() {
         this.queue.start();
+        this.routerSubscription = router.subscribe(mainRouter::onNext);
     }
 
+    @Background
     public void stop() {
         this.queue.stop();
+        this.routerSubscription.unsubscribe();
+        mainRouter.onNext(null);
     }
 
     public void request(String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
@@ -58,5 +71,9 @@ public class NtApplication extends Application {
     public void hiddelKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    public String string(int resource) {
+        return getString(resource);
     }
 }
