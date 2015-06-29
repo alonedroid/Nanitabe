@@ -31,12 +31,10 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (this.fragments.get(position) == null) {
-            this.fragments.put(position, NtChoiceImageFragment.newInstance(this.proposeRecipes.get(position)));
-        }
+        this.fragments.put(position, NtChoiceImageFragment.newInstance(this.proposeRecipes.get(position)));
 
         if (this.titleSubscription == null) {
-            promise(this.fragments.get(position));
+            observeRecipeTitle(this.fragments.get(position));
         }
 
         return this.fragments.get(position);
@@ -53,7 +51,7 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
         if (this.fragments.get(position) == null || this.fragments.get(position).getTitle().getValue() == null) {
             this.titleView.setText(R.string.loading);
             if (this.fragments.get(position) != null) {
-                promise(this.fragments.get(position));
+                observeRecipeTitle(this.fragments.get(position));
             }
         } else {
             this.titleView.setText(this.fragments.get(position).getTitle().getValue());
@@ -65,7 +63,7 @@ public class NtChoiceAdapter extends FragmentStatePagerAdapter {
         return this.proposeRecipes.get(position);
     }
 
-    private void promise(NtChoiceImageFragment fragment) {
+    private void observeRecipeTitle(NtChoiceImageFragment fragment) {
         if (this.titleSubscription != null) {
             this.titleSubscription.unsubscribe();
         }

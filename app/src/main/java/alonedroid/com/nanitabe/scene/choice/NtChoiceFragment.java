@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.DataSetObserver;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -251,7 +252,7 @@ public class NtChoiceFragment extends Fragment {
     @UiThread
     void checkRecipes() {
         if (this.adapter.getCount() == 0) {
-            this.menuName.setText(this.noRecipes);
+            this.menuName.setText(this.app.getString(R.string.no_recipes));
         }
     }
 }

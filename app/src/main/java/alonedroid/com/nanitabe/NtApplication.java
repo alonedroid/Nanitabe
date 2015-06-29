@@ -72,8 +72,4 @@ public class NtApplication extends Application {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
-
-    public String string(int resource) {
-        return getString(resource);
-    }
 }

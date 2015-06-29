@@ -2,6 +2,8 @@ package alonedroid.com.nanitabe.scene.choice;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
@@ -45,6 +47,8 @@ public class NtChoiceImageFragment extends Fragment {
 
     private Bitmap choiceImageBitmap;
 
+    private String recipeImageUrl;
+
     public static NtChoiceImageFragment newInstance(String url) {
         NtChoiceImageFragment_.FragmentBuilder_ builder = NtChoiceImageFragment_.builder();
         builder.argUrl(url);
@@ -61,9 +65,9 @@ public class NtChoiceImageFragment extends Fragment {
         try {
             Document doc = Jsoup.connect(this.recipeUrl + this.argUrl).get();
 
-            String imageUrl = doc.select(".main_photo").first().getElementsByTag("img").attr("src");
+            this.recipeImageUrl = doc.select(".main_photo").first().getElementsByTag("img").attr("src");
             this.title.onNext(doc.select(".recipe_title").first().text());
-            setImage(imageUrl);
+            setImage(this.recipeImageUrl);
         } catch (IOException e) {
             e.printStackTrace();
         }
