@@ -30,6 +30,7 @@ import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtTextUtility;
 import rx.Observable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -243,7 +244,7 @@ public class NtChoiceFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this.adapter::addItem);
         this.analyzer.analyze(this.searchUrl + NtTextUtility.encode(query));
-        this.analyzer.getComplete()
+        AppObservable.bindFragment(this, this.analyzer.getComplete())
                 .subscribe(isComplete -> checkRecipes());
     }
 

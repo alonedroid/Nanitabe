@@ -22,6 +22,7 @@ import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment_;
 import alonedroid.com.nanitabe.service.urasearch.UraSearchService;
+import alonedroid.com.nanitabe.service.urasearch.UraSearchService_;
 import alonedroid.com.nanitabe.sharedpreference.NtServicePreference;
 import rx.Subscription;
 
@@ -58,6 +59,7 @@ public class MainActivity extends Activity {
             NtApplication.getRouter().onNext(NtTopFragment.newInstance());
         } else {
             UraSearchService.forceStop();
+            UraSearchService_.intent(this).stop();
             NtApplication.getRouter().onNext(NtChoiceFragment.newInstance(this.sharedPreference.getRecipes(this.argQuery).split(","), true));
         }
     }

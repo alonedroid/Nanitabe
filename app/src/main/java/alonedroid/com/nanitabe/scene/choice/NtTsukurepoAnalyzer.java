@@ -64,6 +64,8 @@ public class NtTsukurepoAnalyzer {
 
     private boolean cancel;
 
+    private boolean isShowLog = true;
+
     @Background
     public void analyze(String url) {
         this.queryUrl = url;
@@ -79,7 +81,7 @@ public class NtTsukurepoAnalyzer {
 
     private String generateUrl(int index) {
         if (index == 1) return this.queryUrl;
-        this.app.show(index + " / " + this.maxPage + " 解析中");
+        if (this.isShowLog) this.app.show(index + " / " + this.maxPage + " 解析中");
         return this.queryUrl + String.format(this.pagingAttr, index, this.totalRecipe);
     }
 
@@ -112,7 +114,7 @@ public class NtTsukurepoAnalyzer {
         Elements div = connect(generateTsukurepoUrl(id)).select(TSUKUREPO_ROOT);
         if (div.size() == 0) return false;
 
-        int tsukurepo = Integer.parseInt(div.first().select(TSUKUREPO_ELEMENT).text());
+        int tsukurepo = Integer.parseInt(div.first().select(TSUKUREPO_ELEMENT).text().replaceAll(",", ""));
         return tsukurepo >= FILTER_MIN_TSUKUREPO;
     }
 
@@ -134,5 +136,9 @@ public class NtTsukurepoAnalyzer {
 
     public void onError(Throwable throwable) {
 
+    }
+
+    public void setShowLog(boolean isShowLog) {
+        this.isShowLog = isShowLog;
     }
 }
