@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="NtInnerShadowView_">
+        <attr name="selected" format="boolean"/>
+        <attr name="text" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="Themes">
+        <attr name="ntInnerShadowViewStyle" format="reference"/>
+    </declare-styleable>
+</resources>

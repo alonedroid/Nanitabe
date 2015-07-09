@@ -27,4 +27,8 @@
     <string name="search_service_complete_title">レシピの検索が完了しています</string>
     <string name="search_service_complete_content">%1$sの検索結果は%2$s件です</string>
     <string name="no_recipes">レシピが見つかりませんでした</string>
+    <string name="search_recipe">レシピを検索する</string>
+    <string name="now_search_hint">食べたいレシピが見つかるまで検索を続けます。\nアプリを終了すると検索は終了します。</string>
+    <string name="back_search_hint">最大で30件、見つかるまで検索します。\nアプリを終了しても検索が続きます。</string>
+    <string name="no_query">検索ワードを入力してください</string>
 </resources>
