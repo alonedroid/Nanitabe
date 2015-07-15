@@ -15,14 +15,14 @@
     <View
         android:id="@+id/top_shadow"
         android:layout_width="match_parent"
-        android:layout_height="3px"
+        android:layout_height="2px"
         android:layout_alignParentTop="true"
         android:background="@drawable/custom_inner_shadow_top"
         />
 
     <View
         android:id="@+id/left_shadow"
-        android:layout_width="2px"
+        android:layout_width="1px"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:background="@drawable/custom_inner_shadow_left"
@@ -30,7 +30,7 @@
 
     <View
         android:id="@+id/right_shadow"
-        android:layout_width="2px"
+        android:layout_width="1px"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:background="@drawable/custom_inner_shadow_right"
@@ -39,7 +39,7 @@
     <View
         android:id="@+id/bottom_shadow"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="0px"
         android:layout_alignParentBottom="true"
         android:background="@drawable/custom_inner_shadow_bottom"
         />

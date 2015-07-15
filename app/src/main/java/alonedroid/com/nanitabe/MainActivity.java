@@ -19,6 +19,7 @@ import org.androidannotations.annotations.Extra;
 
 import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
+import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment_;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment_;
 import alonedroid.com.nanitabe.service.urasearch.UraSearchService;
@@ -94,11 +95,18 @@ public class MainActivity extends Activity {
             reset();
         } else if (fragment instanceof NtTopFragment_) {
             replace(fragment, false);
-        } else if (TextUtils.isEmpty(this.argRecipes) && TextUtils.isEmpty(this.argQuery)) {
+        } else if (needBackStackReplace(fragment)) {
             replace(fragment, true);
         } else {
             replace(fragment, false);
         }
+    }
+
+    private boolean needBackStackReplace(Fragment fragment) {
+        if (fragment instanceof NtChoiceFragment_) {
+            return TextUtils.isEmpty(this.argRecipes) && TextUtils.isEmpty(this.argQuery);
+        }
+        return true;
     }
 
     private String tag(Fragment fragment) {
