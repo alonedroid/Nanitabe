@@ -1,6 +1,6 @@
 package alonedroid.com.nanitabe.scene.search;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.webkit.WebView;

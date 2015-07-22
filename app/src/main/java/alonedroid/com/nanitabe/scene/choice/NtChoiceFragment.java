@@ -1,11 +1,10 @@
 package alonedroid.com.nanitabe.scene.choice;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -120,7 +119,7 @@ public class NtChoiceFragment extends Fragment {
 
     @AfterInject
     void init() {
-        this.adapter = new NtChoiceAdapter(getActivity(), getFragmentManager(), Arrays.asList(this.argRecipeIds));
+        this.adapter = new NtChoiceAdapter(getActivity(), getChildFragmentManager(), Arrays.asList(this.argRecipeIds));
         this.adapter.registerDataSetObserver(this.dataSetObserver);
         uraSearch(this.argRecipeQuery);
     }

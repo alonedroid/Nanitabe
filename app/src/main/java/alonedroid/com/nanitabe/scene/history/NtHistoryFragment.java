@@ -1,6 +1,6 @@
 package alonedroid.com.nanitabe.scene.history;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.widget.GridView;
 
 import org.androidannotations.annotations.AfterViews;
