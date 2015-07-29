@@ -12,6 +12,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.parse.Parse;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
@@ -49,6 +50,13 @@ public class NtApplication extends Application {
     void init() {
         this.toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         this.queue = Volley.newRequestQueue(this);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "0vu3h6v603HXARCYzJbXAbUr6m6Ka4cOrC0MV29T", "i8CjRU0b0cr98cugViPAx6lu8xoUm84VaUkUs3fi");
     }
 
     @Background
