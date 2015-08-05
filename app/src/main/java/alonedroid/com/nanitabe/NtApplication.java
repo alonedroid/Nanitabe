@@ -13,12 +13,14 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.parse.Parse;
+import com.parse.ParseCrashReporting;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EApplication;
 import org.androidannotations.annotations.UiThread;
 
+import alonedroid.com.nanitabe.activity.R;
 import lombok.Getter;
 import rx.Subscription;
 import rx.subjects.BehaviorSubject;
@@ -50,13 +52,13 @@ public class NtApplication extends Application {
     void init() {
         this.toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
         this.queue = Volley.newRequestQueue(this);
+        initMbaas();
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    private void initMbaas() {
+        ParseCrashReporting.enable(this);
         Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "0vu3h6v603HXARCYzJbXAbUr6m6Ka4cOrC0MV29T", "i8CjRU0b0cr98cugViPAx6lu8xoUm84VaUkUs3fi");
+        Parse.initialize(this, getString(R.string.mbaas_application_id), getString(R.string.mbaas_client_key));
     }
 
     @Background
@@ -81,8 +83,8 @@ public class NtApplication extends Application {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public void showKeyboard(View view){
-        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    public void showKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.showSoftInput(view, 0);
     }
 
