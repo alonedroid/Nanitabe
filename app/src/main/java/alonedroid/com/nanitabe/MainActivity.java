@@ -1,12 +1,12 @@
 package alonedroid.com.nanitabe;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -28,7 +28,7 @@ import alonedroid.com.nanitabe.sharedpreference.NtServicePreference;
 import rx.Subscription;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 
     @Extra
     String argRecipes;
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
     }
 
     private void replace(Fragment fragment, boolean stack) {
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (stack) {
             transaction.addToBackStack(tag(fragment));
         }
@@ -129,14 +129,14 @@ public class MainActivity extends Activity {
     }
 
     private boolean secondTimeTop(String tag) {
-        if (getFragmentManager().getBackStackEntryCount() <= 0) return false;
+        if (getSupportFragmentManager().getBackStackEntryCount() <= 0) return false;
         return tag.equals(NtTopFragment_.class.getSimpleName());
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode != KeyEvent.KEYCODE_BACK) return super.onKeyDown(keyCode, event);
 
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
         if (fragment instanceof NtOnKeyDown) {
             if (((NtOnKeyDown) fragment).goBack()) {
                 return false;

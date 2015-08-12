@@ -1,6 +1,6 @@
 package alonedroid.com.nanitabe.scene.uratop;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;

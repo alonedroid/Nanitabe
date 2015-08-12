@@ -1,9 +1,7 @@
 package alonedroid.com.nanitabe.scene.choice;
 
-import android.app.Fragment;
 import android.graphics.Bitmap;
-import android.util.Log;
-import android.view.ViewGroup;
+import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
