@@ -11,6 +11,17 @@
         </layer-list>
     </item>
 
+    <item android:state_selected="true">
+        <layer-list>
+            <item>
+                <shape>
+                    <solid android:color="@color/grey_600"/>
+                    <corners android:radius="2dp"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
     <item android:state_pressed="true">
         <layer-list>
             <item>

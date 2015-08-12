@@ -5,7 +5,7 @@
     >
 
     <ImageView
-        android:id="@+id/menu_photo"
+        android:id="@+id/choice_image_photo"
         android:layout_width="300dip"
         android:layout_height="295dip"
         android:layout_gravity="center|center"

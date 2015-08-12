@@ -1,8 +1,5 @@
 package alonedroid.com.nanitabe.utility;
 
-import android.util.Log;
-
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.json.JSONArray;
@@ -15,65 +12,78 @@ import java.util.List;
 import alonedroid.com.nanitabe.sharedpreference.FavoriteData_;
 import rx.Observable;
 
-@EBean
+@EBean(scope = EBean.Scope.Singleton)
 public class NtDataManager {
 
-    private static final String TITLE = "title";
-
-    private static final String IMAGE = "image";
+    public enum TABLE {
+        FAVORITE, HISTORY
+    }
 
     @Pref
     FavoriteData_ favorite;
 
-    private JSONObject rootObject;
+    private JSONObject root;
 
-    private JSONObject historyObject;
+    private TABLE table;
 
-    @AfterInject
-    void init() {
-        try {
-            this.rootObject = json(this.favorite.all().get());
-            this.historyObject = json(this.favorite.history().get());
-        } catch (JSONException e) {
-            this.rootObject = null;
+    public NtDataManager table(TABLE table) throws JSONException {
+        this.table = table;
+
+        if (table == TABLE.FAVORITE) {
+            this.root = json(this.favorite.all().get());
         }
-    }
-
-    public boolean has(String url) {
-        return this.rootObject.has(url);
-    }
-
-    public void addHistory(String url) {
-        try {
-            this.historyObject.put(url, this.rootObject.getJSONObject(url));
-            saveHistory();
-        } catch (JSONException e) {
+        if (table == TABLE.HISTORY) {
+            this.root = json(this.favorite.history().get());
         }
+        return this;
     }
 
-    public void put(String url, String title, String image) throws JSONException {
-        JSONObject json = simpleJson();
-        json.put(TITLE, title);
-        json.put(IMAGE, image);
-        this.rootObject.put(url, json);
-        save();
+    public NtDataManager find(String key) throws JSONException {
+        this.root = this.root.getJSONObject(key);
+        return this;
     }
 
-    public void remove(String url) {
-        this.rootObject.remove(url);
-        save();
+    public List<String> selectKeys() {
+        return arrayToString(this.root.names());
+    }
+
+    public List<NtRecipeItem> selectAll() {
+        return Observable.from(selectKeys())
+                .map(this::item)
+                .toList().toBlocking().single();
+    }
+
+    private NtRecipeItem item(String key) {
+        try {
+            return new NtRecipeItem(this.root.getString(key));
+        } catch (JSONException e) {
+            return new NtRecipeItem("{}");
+        }
     }
 
     public boolean exists(String url) {
-        return this.rootObject.has(url);
+        return this.root.has(url);
     }
 
-    public List<String> getKeys() {
-        return arrayToString(this.rootObject.names());
+    public void insert(String url, String title, String image) throws JSONException {
+        JSONObject json = simpleJson();
+        json.put(NtRecipeItem.URL, url);
+        json.put(NtRecipeItem.TITLE, title);
+        json.put(NtRecipeItem.IMAGE, image);
+        this.root.put(url, json);
+        save();
     }
 
-    public List<String> getHistory() {
-        return arrayToString(this.historyObject.names());
+    public void log(String key) throws JSONException {
+        NtRecipeItem item = new NtRecipeItem(json(this.favorite.all().get()).getJSONObject(key));
+        item.addDate();
+        this.root.put(item.getDate() + key, item.toString());
+        save();
+    }
+
+    public void delete(String url) {
+        this.root.remove(url);
+        save();
     }
 
     private List<String> arrayToString(JSONArray array) {
@@ -93,41 +103,13 @@ public class NtDataManager {
         }
     }
 
-    public String get(String key) {
-        return value(this.rootObject, key);
-    }
-
-    public String getTitle(String key) {
-        return value(recipe(key), TITLE);
-    }
-
-    public String getImage(String key) {
-        return value(recipe(key), IMAGE);
-    }
-
-    private JSONObject recipe(String key) {
-        try {
-            return this.rootObject.getJSONObject(key);
-        } catch (JSONException e) {
-            return null;
+    private void save() {
+        if (this.table == TABLE.FAVORITE) {
+            this.favorite.all().put(this.root.toString());
         }
-    }
-
-    private String value(JSONObject json, String key) {
-        if (json == null) return null;
-        try {
-            return json.getString(key);
-        } catch (JSONException e) {
-            return null;
+        if (this.table == TABLE.HISTORY) {
+            this.favorite.history().put(this.root.toString());
         }
-    }
-
-    public void save() {
-        this.favorite.all().put(this.rootObject.toString());
-    }
-
-    public void saveHistory() {
-        this.favorite.history().put(this.historyObject.toString());
     }
 
     private JSONObject json(String str) throws JSONException {

@@ -1,0 +1,8 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <color android:color="@color/selected_brown_on"/>
+    </item>
+    <item android:state_selected="false">
+        <color android:color="@color/selected_brown_off"/>
+    </item>
+</selector>

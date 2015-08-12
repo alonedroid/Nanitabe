@@ -8,7 +8,7 @@ import android.graphics.PixelFormat;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 
 
 /**

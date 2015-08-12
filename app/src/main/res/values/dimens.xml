@@ -15,4 +15,5 @@
     <dimen name="dimen_zpos_s">88dp</dimen>
     <!-- Application Layout Size -->
     <dimen name="default_view_height">45dp</dimen>
+    <dimen name="option_view_height">60dp</dimen>
 </resources>

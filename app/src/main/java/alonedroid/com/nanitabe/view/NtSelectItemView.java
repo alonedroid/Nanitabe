@@ -1,8 +1,10 @@
 package alonedroid.com.nanitabe.view;
 
 import android.content.Context;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -15,43 +17,46 @@ import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.choice.ImageLruCache;
 
-@EViewGroup(R.layout.view_nt_history_item)
-public class NtHistoryItemView extends RelativeLayout {
+@EViewGroup(R.layout.view_nt_select_item)
+public class NtSelectItemView extends RelativeLayout {
 
     @App
     NtApplication app;
 
     @ViewById
-    NetworkImageView historyImage;
+    NetworkImageView selectImage;
 
     @ViewById
-    TextView historyTitle;
+    TextView selectTitle;
 
     @ViewById
-    TextView historyDate;
+    ImageView selectCheck;
 
-    public static NtHistoryItemView newInstance(Context context, String imageUrl, String title, String date) {
-        NtHistoryItemView view = NtHistoryItemView_.build(context);
+    public static NtSelectItemView newInstance(Context context, String imageUrl, String title) {
+        NtSelectItemView view = NtSelectItemView_.build(context);
         view.setImage(imageUrl);
         view.setTitle(title);
-        view.setDate(date);
 
         return view;
     }
 
-    public NtHistoryItemView(Context context) {
+    public NtSelectItemView(Context context) {
         super(context);
     }
 
     public void setImage(String imageUrl) {
-        this.historyImage.setImageUrl(imageUrl, new ImageLoader(this.app.getQueue(), new ImageLruCache()));
+        this.selectImage.setImageUrl(imageUrl, new ImageLoader(this.app.getQueue(), new ImageLruCache()));
     }
 
     public void setTitle(String title) {
-        this.historyTitle.setText(title);
+        this.selectTitle.setText(title);
     }
 
-    public void setDate(String date) {
-        this.historyDate.setText(date);
+    public void toggleCheck() {
+        setCheck(!this.selectCheck.isEnabled());
+    }
+
+    public void setCheck(boolean checked) {
+        this.selectCheck.setEnabled(checked);
     }
 }

@@ -3,13 +3,25 @@ package alonedroid.com.nanitabe.utility;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import lombok.Getter;
+import lombok.Setter;
+
 public class NtRecipeItem {
 
-    private static final String IMAGE = "image";
+    public static final String URL = "url";
 
-    private static final String TITLE = "title";
+    public static final String IMAGE = "image";
 
-    private static final String DATE = "date";
+    public static final String TITLE = "title";
+
+    public static final String DATE = "date";
+
+    @Getter
+    @Setter
+    private boolean checked;
 
     JSONObject root;
 
@@ -21,8 +33,16 @@ public class NtRecipeItem {
         this.root = json(root);
     }
 
+    public NtRecipeItem(JSONObject root) {
+        this.root = root;
+    }
+
     public String getImageUrl() {
         return getValue(IMAGE);
+    }
+
+    public String getUrl() {
+        return getValue(URL);
     }
 
     public String getTitle() {
@@ -33,11 +53,28 @@ public class NtRecipeItem {
         return getValue(DATE);
     }
 
+    public void addDate() {
+        setValue(DATE, new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+    }
+
     private String getValue(String str) {
         try {
             return this.root.getString(str);
         } catch (JSONException e) {
             return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return this.root.toString();
+    }
+
+    private void setValue(String key, String value) {
+        try {
+            this.root.put(key, value);
+        } catch (JSONException e) {
+
         }
     }
 

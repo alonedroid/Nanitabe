@@ -5,21 +5,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.widget.GridView;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
 
 import java.util.List;
 
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.R;
+import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
-import alonedroid.com.nanitabe.utility.RecipePicupAdapter;
+import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;
 import rx.subscriptions.CompositeSubscription;
 
@@ -35,38 +35,38 @@ public class NtSelectFragment extends Fragment {
     @Bean
     NtDataManager dataManager;
 
-    @Bean
     NtDialogFragment dialog;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private RecipePicupAdapter adapter;
+    private NtSelectAdapter adapter;
 
-    private boolean mSelf = true;
+    private boolean self = true;
 
     public static NtSelectFragment newInstance() {
         NtSelectFragment_.FragmentBuilder_ builder_ = NtSelectFragment_.builder();
         return builder_.build();
     }
 
-    @AfterInject
-    void init() {
-        initDialog();
-    }
-
     @AfterViews
     void initViews() {
+        initDialog();
         initListData();
-        this.ntSelectList.setOnItemClickListener((parent, view, position, time) -> this.adapter.clickItem(view, position));
+        this.ntSelectList.setOnItemClickListener((parent, view, position, time) -> this.adapter.clickItem(position));
     }
 
     private void initListData() {
-        List<String> keys = this.dataManager.getKeys();
-        this.adapter = new RecipePicupAdapter(getActivity(), R.layout.layout_recipe_list_row, keys);
-        this.ntSelectList.setAdapter(this.adapter);
+        try {
+            List<NtRecipeItem> items = this.dataManager.table(NtDataManager.TABLE.FAVORITE).selectAll();
+            this.adapter = new NtSelectAdapter(getActivity(), R.layout.view_nt_select_item, items);
+            this.ntSelectList.setAdapter(this.adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initDialog() {
+        this.dialog = NtDialogFragment.newInstance();
         this.compositeSubscription.add(this.dialog.getWhich()
                 .filter(which -> which == DialogInterface.BUTTON_POSITIVE)
                 .subscribe(which -> dialogPositive()));
@@ -74,9 +74,17 @@ public class NtSelectFragment extends Fragment {
 
     private void dialogPositive() {
         Observable.from(this.adapter.getSelectedItems())
-                .subscribe(this.dataManager::remove,
+                .subscribe(this::removeFavorite,
                         this::onError,
                         this::onComplete);
+    }
+
+    private void removeFavorite(String key) {
+        try {
+            this.dataManager.table(NtDataManager.TABLE.FAVORITE).delete(key);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void onError(Throwable t) {
@@ -95,7 +103,7 @@ public class NtSelectFragment extends Fragment {
 
     @Click
     void ntSelectDone() {
-        if (this.mSelf) {
+        if (this.self) {
             ntSelectOpen();
         } else {
             ntSelectSend();

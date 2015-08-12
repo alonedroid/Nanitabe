@@ -12,5 +12,23 @@
     <string name="dialog_message">選択したレシピを削除しますか？</string>
     <string name="dialog_positive">はい</string>
     <string name="dialog_negative">いいえ</string>
-
+    <string name="loading">取得中...</string>
+    <string name="message_add_favorite">お気に入りに登録しました</string>
+    <string name="message_remove_favorite">お気に入りから削除しました</string>
+    <string name="error">問題が発生したためアプリを終了します。</string>
+    <string name="search">Search</string>
+    <string name="ura_search">裏Search</string>
+    <string name="search_service_starting_ticker">%1$sでレシピを検索します</string>
+    <string name="search_service_starting_title">レシピを検索しています</string>
+    <string name="search_service_starting_content">処理を中断できます</string>
+    <string name="search_service_working_title">レシピが見つかりました</string>
+    <string name="search_service_working_content">処理を中断してレシピを見れます</string>
+    <string name="search_service_complete_ticker">検索が完了しました</string>
+    <string name="search_service_complete_title">レシピの検索が完了しています</string>
+    <string name="search_service_complete_content">%1$sの検索結果は%2$s件です</string>
+    <string name="no_recipes">レシピが見つかりませんでした</string>
+    <string name="search_recipe">レシピを検索する</string>
+    <string name="now_search_hint">食べたいレシピが見つかるまで検索を続けます。\nアプリを終了すると検索は終了します。</string>
+    <string name="back_search_hint">最大で30件、見つかるまで検索します。\nアプリを終了しても検索が続きます。</string>
+    <string name="no_query">検索ワードを入力してください</string>
 </resources>
