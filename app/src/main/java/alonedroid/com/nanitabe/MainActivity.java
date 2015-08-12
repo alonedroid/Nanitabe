@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity {
         String tag = tag(fragment);
 
         if (secondTimeTop(tag)) {
-            reset();
+            reset(fragment);
         } else if (fragment instanceof NtTopFragment_) {
             replace(fragment, false);
         } else if (needBackStackReplace(fragment)) {
@@ -113,7 +113,11 @@ public class MainActivity extends FragmentActivity {
         return fragment.getClass().getSimpleName();
     }
 
-    private void reset() {
+    private void reset(Fragment fragment) {
+        if (getFragmentManager().getBackStackEntryCount() == 0) {
+            replace(fragment, false);
+            return;
+        }
         int firstId = getFragmentManager().getBackStackEntryAt(0).getId();
         getFragmentManager()
                 .popBackStack(firstId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
