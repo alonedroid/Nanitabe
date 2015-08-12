@@ -44,7 +44,6 @@
             android:id="@+id/option_now"
             android:layout_width="50dp"
             android:layout_height="@dimen/default_view_height"
-            android:layout_marginBottom="@dimen/dimen_space_8dp"
             original:selected="true"
             original:text="今すぐ検索"
             />
@@ -53,7 +52,6 @@
             android:id="@+id/option_back"
             android:layout_width="50dp"
             android:layout_height="@dimen/default_view_height"
-            android:layout_marginBottom="@dimen/dimen_space_8dp"
             android:layout_toRightOf="@id/option_now"
             original:text="隠れて検索"
             />

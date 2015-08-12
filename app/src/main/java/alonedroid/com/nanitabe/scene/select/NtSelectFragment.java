@@ -18,6 +18,7 @@ import java.util.List;
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
+import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;
@@ -127,7 +128,15 @@ public class NtSelectFragment extends Fragment {
         if (this.adapter.getSelectedItems().length == 0) return;
 
         List<String> idList = collectSelectedIdsArray();
+        if (idList.size() == 1) {
+            openRecipe(idList.get(0));
+            return;
+        }
         NtApplication.getRouter().onNext(NtChoiceFragment.newInstance(idList.toArray(new String[idList.size()])));
+    }
+
+    private void openRecipe(String id) {
+        NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, id));
     }
 
     private void ntSelectSend() {

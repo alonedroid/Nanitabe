@@ -21,6 +21,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 import org.json.JSONException;
+import org.jsoup.helper.StringUtil;
 
 import java.util.Arrays;
 
@@ -203,6 +204,15 @@ public class NtChoiceFragment extends Fragment {
     @Click
     void nextMenu() {
         this.ntRecipePager.setCurrentItem(this.ntRecipePager.getCurrentItem() + 1, true);
+    }
+
+    void shareMenu() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "オススメレシピ");
+        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.choice?" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
+        startActivity(Intent.createChooser(intent, "シェアするアプリを選択してください。"));
     }
 
     @Click
