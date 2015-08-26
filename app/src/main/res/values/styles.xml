@@ -17,4 +17,9 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="BrownButton">
+        <item name="android:background">@drawable/custom_button</item>
+        <item name="android:gravity">center|center</item>
+        <item name="android:textColor">@color/white_300</item>
+    </style>
 </resources>

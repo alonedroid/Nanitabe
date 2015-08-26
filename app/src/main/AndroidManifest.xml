@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18"/>
@@ -22,15 +22,32 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="alonedroid.com.nanitabe.MainActivity_"
-            android:launchMode="singleTop"
-            >
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <service
             android:name="alonedroid.com.nanitabe.service.urasearch.UraSearchService_"
             android:enabled="true"/>
+
+        <activity
+            android:name="alonedroid.com.nanitabe.ShareActivity"
+            android:label="@string/title_activity_share">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="nanitabe.org"
+                    android:scheme="http"/>
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>

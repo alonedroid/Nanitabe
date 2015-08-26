@@ -7,6 +7,13 @@
     tools:context="alonedroid.com.nanitabe.scene.select.NtChoiceFragment_"
     >
 
+    <FrameLayout
+        android:id="@+id/center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        />
+
     <ImageView
         android:id="@+id/nt_choice_title"
         android:layout_width="match_parent"
@@ -81,15 +88,30 @@
             />
     </LinearLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/decide_menu"
-        android:layout_width="250dip"
-        android:layout_height="50dip"
+        style="@style/BrownButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center|center"
-        android:layout_marginBottom="10dip"
-        android:layout_marginTop="10dip"
-        android:background="@drawable/decide"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="2.5dp"
+        android:layout_toLeftOf="@id/center"
+        android:text="これ食べたい"
+        />
+
+    <TextView
+        android:id="@+id/share_menu"
+        style="@style/BrownButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_view_height"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="2.5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@id/center"
+        android:text="候補を送る"
+        android:visibility="gone"
         />
 </RelativeLayout>

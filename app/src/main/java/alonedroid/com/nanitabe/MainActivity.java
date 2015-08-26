@@ -20,6 +20,7 @@ import org.androidannotations.annotations.Extra;
 import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
 import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment_;
+import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment;
 import alonedroid.com.nanitabe.scene.top.NtTopFragment_;
 import alonedroid.com.nanitabe.service.urasearch.UraSearchService;
@@ -48,6 +49,10 @@ public class MainActivity extends FragmentActivity {
         return new MainActivity_.IntentBuilder_(context).argQuery(query).get();
     }
 
+    public static Intent newIntentRecipes(Context context, String recipes) {
+        return new MainActivity_.IntentBuilder_(context).argRecipes(recipes).get();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,14 @@ public class MainActivity extends FragmentActivity {
 
     @AfterViews
     void initViews() {
-        if (TextUtils.isEmpty(this.argQuery) || TextUtils.isEmpty(this.sharedPreference.getRecipes(this.argQuery))) {
+        if (!TextUtils.isEmpty(this.argRecipes)) {
+            String[] recipes = this.argRecipes.split(",");
+            if (recipes.length == 1) {
+                NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, recipes[0]));
+            } else {
+                NtApplication.getRouter().onNext(NtChoiceFragment.newInstance(recipes, true, true));
+            }
+        } else if (TextUtils.isEmpty(this.argQuery) || TextUtils.isEmpty(this.sharedPreference.getRecipes(this.argQuery))) {
             NtApplication.getRouter().onNext(NtTopFragment.newInstance());
         } else {
             UraSearchService.forceStop();

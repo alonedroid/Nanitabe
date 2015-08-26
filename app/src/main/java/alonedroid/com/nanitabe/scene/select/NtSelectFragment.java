@@ -132,7 +132,7 @@ public class NtSelectFragment extends Fragment {
             openRecipe(idList.get(0));
             return;
         }
-        NtApplication.getRouter().onNext(NtChoiceFragment.newInstance(idList.toArray(new String[idList.size()])));
+        NtApplication.getRouter().onNext(NtChoiceFragment.newSharableInstance(idList.toArray(new String[idList.size()])));
     }
 
     private void openRecipe(String id) {

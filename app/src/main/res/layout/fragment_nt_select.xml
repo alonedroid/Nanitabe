@@ -27,6 +27,7 @@
 
     <TextView
         android:id="@+id/nt_select_delete"
+        style="@style/BrownButton"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_view_height"
         android:layout_alignParentBottom="true"
@@ -34,14 +35,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="2.5dp"
         android:layout_toLeftOf="@id/center"
-        android:background="@drawable/custom_button"
-        android:gravity="center|center"
         android:text="delete"
-        android:textColor="@color/white_300"
         />
 
     <TextView
         android:id="@+id/nt_select_done"
+        style="@style/BrownButton"
         android:layout_width="match_parent"
         android:layout_height="@dimen/default_view_height"
         android:layout_alignParentBottom="true"
@@ -49,10 +48,7 @@
         android:layout_marginLeft="2.5dp"
         android:layout_marginRight="5dp"
         android:layout_toRightOf="@id/center"
-        android:background="@drawable/custom_button"
-        android:gravity="center|center"
         android:text="select"
-        android:textColor="@color/white_300"
         />
 
     <GridView

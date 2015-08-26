@@ -47,6 +47,12 @@ public class NtChoiceFragment extends Fragment {
     @FragmentArg
     boolean argRecipeNoLog;
 
+    @FragmentArg
+    boolean argRecipeShare;
+
+    @FragmentArg
+    boolean argSharable;
+
     @App
     NtApplication app;
 
@@ -77,6 +83,9 @@ public class NtChoiceFragment extends Fragment {
     @ViewById
     ImageView nextMenu;
 
+    @ViewById
+    TextView shareMenu;
+
     @Bean
     NtDataManager dataManager;
 
@@ -104,10 +113,26 @@ public class NtChoiceFragment extends Fragment {
         return newInstance(ids, false);
     }
 
+    public static NtChoiceFragment newSharableInstance(String[] ids) {
+        NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
+        builder_.argRecipeIds(ids);
+        builder_.argRecipeNoLog(true);
+        builder_.argSharable(true);
+        return builder_.build();
+    }
+
     public static NtChoiceFragment newInstance(String[] ids, boolean noLogFlg) {
         NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
         builder_.argRecipeIds(ids);
         builder_.argRecipeNoLog(noLogFlg);
+        return builder_.build();
+    }
+
+    public static NtChoiceFragment newInstance(String[] ids, boolean noLogFlg, boolean shareFlg) {
+        NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
+        builder_.argRecipeIds(ids);
+        builder_.argRecipeNoLog(noLogFlg);
+        builder_.argRecipeShare(shareFlg);
         return builder_.build();
     }
 
@@ -130,6 +155,9 @@ public class NtChoiceFragment extends Fragment {
         initPager();
         initIndicator();
         selectedPosition(0);
+        if (this.argSharable) {
+            this.shareMenu.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -206,21 +234,22 @@ public class NtChoiceFragment extends Fragment {
         this.ntRecipePager.setCurrentItem(this.ntRecipePager.getCurrentItem() + 1, true);
     }
 
+    @Click
     void shareMenu() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "オススメレシピ");
-        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.choice?" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
+        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.org?" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
         startActivity(Intent.createChooser(intent, "シェアするアプリを選択してください。"));
     }
 
     @Click
     void decideMenu() {
-        if (isSelf) {
-            decideMenuOpen();
-        } else {
+        if (this.argRecipeShare) {
             decideMenuSend();
+        } else {
+            decideMenuOpen();
         }
     }
 
@@ -239,11 +268,12 @@ public class NtChoiceFragment extends Fragment {
     }
 
     private void decideMenuSend() {
-        // TODO.Activity側にインスタンスの生成メソッドを実装
+        String id = this.adapter.getId(this.ntRecipePager.getCurrentItem());
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "今日のごはん");
+        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.org?" + id);
         startActivity(Intent.createChooser(intent, "共有に使用するアプリを選択してください。"));
     }
 
