@@ -36,7 +36,8 @@
 
         <activity
             android:name="alonedroid.com.nanitabe.ShareActivity"
-            android:label="@string/title_activity_share">
+            android:label="@string/title_activity_share"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 

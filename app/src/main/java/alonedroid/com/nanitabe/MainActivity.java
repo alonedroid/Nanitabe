@@ -37,6 +37,9 @@ public class MainActivity extends FragmentActivity {
     @Extra
     String argQuery;
 
+    @Extra
+    boolean share;
+
     @App
     NtApplication app;
 
@@ -57,6 +60,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.share = getIntent().getBooleanExtra("share", false);
     }
 
     @AfterViews
@@ -158,7 +162,9 @@ public class MainActivity extends FragmentActivity {
                 return false;
             }
         }
-
+        if (this.share) {
+            moveTaskToBack(true);
+        }
         return super.onKeyDown(keyCode, event);
     }
 

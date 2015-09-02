@@ -21,7 +21,9 @@ public class ShareActivity extends Activity {
         String action = intent.getAction();
         if (Intent.ACTION_VIEW.equals(action)) {
             Intent newIntent = MainActivity.newIntentRecipes(getApplicationContext(), intent.getDataString().split("\\?")[1]);
+            newIntent.putExtra("share", true);
             startActivity(newIntent);
+            finish();
         }
     }
 }
