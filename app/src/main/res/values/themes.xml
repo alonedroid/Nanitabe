@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.NanitabeBase" parent="android:Theme.Holo.NoActionBar"/>
+
+    <style name="Theme.Nabitabe" parent="Theme.NanitabeBase">
+        <item name="titleTextStyle">@style/Widget.Nanitabe.Title.Text</item>
+        <item name="editTextStyle">@style/Widget.Nanitabe.Edit.Text</item>
+    </style>
+</resources>

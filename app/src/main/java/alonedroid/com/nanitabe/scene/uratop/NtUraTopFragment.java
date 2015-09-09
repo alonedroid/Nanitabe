@@ -2,6 +2,7 @@ package alonedroid.com.nanitabe.scene.uratop;
 
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,8 +13,9 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import alonedroid.com.nanitabe.NtApplication;
+import alonedroid.com.nanitabe.NtRouter;
 import alonedroid.com.nanitabe.activity.R;
-import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
+import alonedroid.com.nanitabe.activity.VariableActivity;
 import alonedroid.com.nanitabe.service.urasearch.UraSearchService;
 import alonedroid.com.nanitabe.service.urasearch.UraSearchService_;
 import alonedroid.com.nanitabe.view.NtInnerShadowView;
@@ -38,6 +40,7 @@ public class NtUraTopFragment extends Fragment {
     @AfterViews
     void initViews() {
         this.app.showKeyboard(this.ntTopUrasearchText);
+        this.ntTopUrasearchText.setOnKeyListener(this::onKey);
     }
 
     @Click
@@ -56,15 +59,24 @@ public class NtUraTopFragment extends Fragment {
 
     @Click
     void ntTopUrasearch(View view) {
-        if (TextUtils.isEmpty(this.ntTopUrasearchText.getText())) {
+        String query = this.ntTopUrasearchText.getText().toString();
+        if (TextUtils.isEmpty(query)) {
             this.app.show(this.app.getString(R.string.no_query));
             return;
         }
         if (this.optionBack.isSelected()) {
-            UraSearchService_.intent(getActivity()).extra(UraSearchService.EXTRAS_QUERY, this.ntTopUrasearchText.getText().toString()).start();
+            UraSearchService_.intent(getActivity()).extra(UraSearchService.EXTRAS_QUERY, query).start();
         } else {
-            NtApplication.getRouter().onNext(NtChoiceFragment.newInstance(this.ntTopUrasearchText.getText().toString()));
+            startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getUraSearchMap(query)));
             this.app.hiddelKeyboard(view);
         }
+    }
+
+    boolean onKey(View view, int keyCode, KeyEvent event) {
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            ntTopUrasearch(view);
+            return true;
+        }
+        return false;
     }
 }

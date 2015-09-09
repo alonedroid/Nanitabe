@@ -6,19 +6,18 @@ import android.support.v4.app.Fragment;
 import android.widget.GridView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
+import org.jsoup.helper.StringUtil;
 
 import java.util.List;
 
-import alonedroid.com.nanitabe.NtApplication;
+import alonedroid.com.nanitabe.NtRouter;
 import alonedroid.com.nanitabe.activity.R;
-import alonedroid.com.nanitabe.scene.choice.NtChoiceFragment;
-import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
+import alonedroid.com.nanitabe.activity.VariableActivity;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;
@@ -26,9 +25,6 @@ import rx.subscriptions.CompositeSubscription;
 
 @EFragment(R.layout.fragment_nt_select)
 public class NtSelectFragment extends Fragment {
-
-    @App
-    NtApplication app;
 
     @ViewById
     GridView ntSelectList;
@@ -54,6 +50,12 @@ public class NtSelectFragment extends Fragment {
         initDialog();
         initListData();
         this.ntSelectList.setOnItemClickListener((parent, view, position, time) -> this.adapter.clickItem(position));
+    }
+
+    @Override
+    public void onStop() {
+        this.compositeSubscription.clear();
+        super.onStop();
     }
 
     private void initListData() {
@@ -132,11 +134,11 @@ public class NtSelectFragment extends Fragment {
             openRecipe(idList.get(0));
             return;
         }
-        NtApplication.getRouter().onNext(NtChoiceFragment.newSharableInstance(idList.toArray(new String[idList.size()])));
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getChoiceMap(StringUtil.join(idList, ","))));
     }
 
     private void openRecipe(String id) {
-        NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, id));
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
     }
 
     private void ntSelectSend() {
@@ -148,13 +150,7 @@ public class NtSelectFragment extends Fragment {
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "ごはん候補");
-        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.choice?" + ids);
+        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.choice?id=" + ids);
         startActivity(Intent.createChooser(intent, "共有に使用するアプリを選択してください。"));
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        this.compositeSubscription.clear();
     }
 }

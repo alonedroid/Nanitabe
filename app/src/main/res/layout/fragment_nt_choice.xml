@@ -74,6 +74,7 @@
             android:layout_gravity="center|center"
             android:layout_weight="1"
             android:gravity="center|center"
+            android:text="@string/loading"
             android:textColor="#fff"
             />
 
@@ -112,6 +113,5 @@
         android:layout_marginRight="5dp"
         android:layout_toRightOf="@id/center"
         android:text="候補を送る"
-        android:visibility="gone"
         />
 </RelativeLayout>

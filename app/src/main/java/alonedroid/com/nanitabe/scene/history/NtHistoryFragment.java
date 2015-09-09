@@ -4,7 +4,6 @@ import android.support.v4.app.Fragment;
 import android.widget.GridView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
@@ -13,18 +12,15 @@ import org.json.JSONException;
 import java.util.Collections;
 import java.util.List;
 
-import alonedroid.com.nanitabe.NtApplication;
+import alonedroid.com.nanitabe.NtRouter;
 import alonedroid.com.nanitabe.activity.R;
-import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
+import alonedroid.com.nanitabe.activity.VariableActivity;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtRecipeItem;
 import rx.Observable;
 
 @EFragment(R.layout.fragment_nt_history)
 public class NtHistoryFragment extends Fragment {
-
-    @App
-    NtApplication app;
 
     @ViewById
     GridView ntHistoryList;
@@ -55,8 +51,7 @@ public class NtHistoryFragment extends Fragment {
     }
 
     private void openUrl(String url) {
-        String id = Observable.from(url.split("/"))
-                .last().toBlocking().single();
-        NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, id));
+        String id = Observable.from(url.split("/")).last().toBlocking().single();
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
     }
 }

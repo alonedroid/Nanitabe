@@ -37,7 +37,7 @@
         android:layout_toLeftOf="@id/center"
         android:background="@drawable/custom_button"
         android:gravity="center|center"
-        android:text="@string/top"
+        android:text="@string/back"
         android:textColor="@color/white_300"
         />
 

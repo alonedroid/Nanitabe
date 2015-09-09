@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg"
-                tools:context="alonedroid.com.nanitabe.MainActivity"
+                tools:context="alonedroid.com.nanitabe.scene.top.NtTopFragment_"
     >
 
     <FrameLayout
@@ -26,6 +26,7 @@
 
     <EditText
         android:id="@+id/nt_top_search_text"
+        style="@style/Widget.Nanitabe.Edit.Text"
         android:layout_width="200dp"
         android:layout_height="@dimen/default_view_height"
         android:layout_above="@id/center"

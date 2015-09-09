@@ -19,10 +19,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name="alonedroid.com.nanitabe.MainActivity_"
-            android:launchMode="singleTop">
+        android:theme="@style/Theme.Nabitabe">
+        <activity android:name="alonedroid.com.nanitabe.activity.MainActivity_">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -35,7 +33,7 @@
             android:enabled="true"/>
 
         <activity
-            android:name="alonedroid.com.nanitabe.ShareActivity"
+            android:name="alonedroid.com.nanitabe.activity.ShareActivity_"
             android:label="@string/title_activity_share"
             android:launchMode="singleTask">
             <intent-filter>
@@ -49,6 +47,8 @@
                     android:scheme="http"/>
             </intent-filter>
         </activity>
+        <activity android:name="alonedroid.com.nanitabe.activity.VariableActivity_"/>
+        <activity android:name="alonedroid.com.nanitabe.activity.ReceptionActivity_"/>
     </application>
 
 </manifest>

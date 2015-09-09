@@ -15,6 +15,7 @@
 
     <EditText
         android:id="@+id/nt_top_urasearch_text"
+        style="@style/Widget.Nanitabe.Edit.Text"
         android:layout_width="200dp"
         android:layout_height="@dimen/default_view_height"
         android:layout_above="@id/center"
@@ -59,6 +60,7 @@
 
     <TextView
         android:id="@+id/nt_top_search_hint"
+        style="?attr/titleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dimen_space_48dp"
         android:layout_below="@id/option_wrapper"
