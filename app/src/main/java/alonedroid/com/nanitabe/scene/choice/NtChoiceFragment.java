@@ -19,15 +19,15 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.res.StringRes;
 import org.json.JSONException;
 import org.jsoup.helper.StringUtil;
 
 import java.util.Arrays;
 
 import alonedroid.com.nanitabe.NtApplication;
+import alonedroid.com.nanitabe.NtRouter;
 import alonedroid.com.nanitabe.activity.R;
-import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
+import alonedroid.com.nanitabe.activity.VariableActivity;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtTextUtility;
 import rx.Observable;
@@ -44,23 +44,8 @@ public class NtChoiceFragment extends Fragment {
     @FragmentArg
     String argRecipeQuery;
 
-    @FragmentArg
-    boolean argRecipeNoLog;
-
     @App
     NtApplication app;
-
-    @StringRes
-    String noRecipes;
-
-    @StringRes
-    String recipeUrl;
-
-    @StringRes
-    String searchUrl;
-
-    @StringRes
-    String tsukurepoUrl;
 
     @ViewById
     TextView menuName;
@@ -77,6 +62,9 @@ public class NtChoiceFragment extends Fragment {
     @ViewById
     ImageView nextMenu;
 
+    @ViewById
+    TextView shareMenu;
+
     @Bean
     NtDataManager dataManager;
 
@@ -88,30 +76,25 @@ public class NtChoiceFragment extends Fragment {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    private NtChoiceAdapter adapter;
-
-    private boolean isSelf = true;
+    @Bean
+    NtChoiceAdapter adapter;
 
     private DataSetObserver dataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
             addIndicator(NtChoiceFragment.this.adapter.getCount() == 1);
+            visibleSelectButton(NtChoiceFragment.this.ntRecipePager.getCurrentItem());
         }
     };
 
     public static NtChoiceFragment newInstance(String[] ids) {
-        return newInstance(ids, false);
-    }
-
-    public static NtChoiceFragment newInstance(String[] ids, boolean noLogFlg) {
         NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
         builder_.argRecipeIds(ids);
-        builder_.argRecipeNoLog(noLogFlg);
         return builder_.build();
     }
 
-    public static NtChoiceFragment newInstance(String query) {
+    public static NtChoiceFragment newSearchInstance(String query) {
         NtChoiceFragment_.FragmentBuilder_ builder_ = NtChoiceFragment_.builder();
         builder_.argRecipeIds(new String[0]);
         builder_.argRecipeQuery(query);
@@ -120,16 +103,55 @@ public class NtChoiceFragment extends Fragment {
 
     @AfterInject
     void init() {
-        this.adapter = new NtChoiceAdapter(getActivity(), getChildFragmentManager(), Arrays.asList(this.argRecipeIds));
+        this.adapter.addItem(this.argRecipeIds);
         this.adapter.registerDataSetObserver(this.dataSetObserver);
         uraSearch(this.argRecipeQuery);
     }
 
+    private void uraSearch(String query) {
+        if (TextUtils.isEmpty(query)) return;
+
+        this.analyzer.getSubject()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this.adapter::addItem);
+        this.analyzer.analyze(this.app.getString(R.string.search_url) + NtTextUtility.encode(query));
+        AppObservable.bindFragment(this, this.analyzer.getComplete())
+                .subscribe(isComplete -> checkRecipes());
+    }
+
     @AfterViews
     void initViews() {
+        initLayout();
         initPager();
         initIndicator();
         selectedPosition(0);
+    }
+
+    private void initPager() {
+        this.ntRecipePager.setAdapter(this.adapter);
+        this.ntRecipePager.setOnPageChangeListener(this.changeListener);
+    }
+
+    private void initLayout() {
+        this.adapter.getTitleSubject()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this.menuName::setText);
+        if (!TextUtils.isEmpty(this.argRecipeQuery) || NtApplication.MODE == NtApplication.MODE_SHARE) {
+            this.shareMenu.setEnabled(false);
+        }
+    }
+
+    private void initIndicator() {
+        Observable.range(0, this.adapter.getCount())
+                .subscribe(idx -> addIndicator(0 == idx))
+                .unsubscribe();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.compositeSubscription.add(this.changeListener.getSelectedPosition()
+                .subscribe(this::selectedPosition));
     }
 
     @Override
@@ -141,22 +163,10 @@ public class NtChoiceFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        this.adapter.unsubscribe();
         this.adapter.unregisterDataSetObserver(this.dataSetObserver);
         this.adapter = null;
         super.onDestroy();
-    }
-
-    private void initPager() {
-        this.ntRecipePager.setAdapter(this.adapter);
-        this.ntRecipePager.setOnPageChangeListener(this.changeListener);
-        this.compositeSubscription.add(this.changeListener.getSelectedPosition()
-                .subscribe(this::selectedPosition));
-    }
-
-    private void initIndicator() {
-        Observable.range(0, this.adapter.getCount())
-                .subscribe(idx -> addIndicator(0 == idx))
-                .unsubscribe();
     }
 
     private void addIndicator(boolean on) {
@@ -165,11 +175,10 @@ public class NtChoiceFragment extends Fragment {
         view.setPadding(10, 0, 10, 0);
         view.setEnabled(on);
         this.ntChoiceIndicator.addView(view);
-        selectedPosition(this.ntRecipePager.getCurrentItem());
     }
 
     private void selectedPosition(int position) {
-        this.adapter.setRecipeTitle(this.menuName, position);
+        this.adapter.setPosition(position);
         visibleSelectButton(position);
         Observable.range(0, this.adapter.getCount())
                 .filter(idx -> this.ntChoiceIndicator.getChildAt(idx) != null)
@@ -206,21 +215,22 @@ public class NtChoiceFragment extends Fragment {
         this.ntRecipePager.setCurrentItem(this.ntRecipePager.getCurrentItem() + 1, true);
     }
 
+    @Click
     void shareMenu() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "オススメレシピ");
-        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.choice?" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
+        intent.putExtra(Intent.EXTRA_TEXT, "ナニタベを起動して御飯を選んでね♪\nhttp://nanitabe.org?id=" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
         startActivity(Intent.createChooser(intent, "シェアするアプリを選択してください。"));
     }
 
     @Click
     void decideMenu() {
-        if (isSelf) {
-            decideMenuOpen();
-        } else {
+        if (NtApplication.MODE == NtApplication.MODE_SHARE) {
             decideMenuSend();
+        } else {
+            decideMenuOpen();
         }
     }
 
@@ -228,34 +238,24 @@ public class NtChoiceFragment extends Fragment {
         String id = this.adapter.getId(this.ntRecipePager.getCurrentItem());
         if (TextUtils.isEmpty(id)) return;
         try {
-            if (TextUtils.isEmpty(this.argRecipeQuery) && !this.argRecipeNoLog) {
+            if (TextUtils.isEmpty(this.argRecipeQuery)) {
                 this.dataManager.table(NtDataManager.TABLE.HISTORY)
-                        .log(this.recipeUrl + id);
+                        .log(this.app.getString(R.string.recipe_url) + id);
             }
-            NtApplication.getRouter().onNext(NtSearchFragment.newInstance(null, id));
+            startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     private void decideMenuSend() {
-        // TODO.Activity側にインスタンスの生成メソッドを実装
+        String id = this.adapter.getId(this.ntRecipePager.getCurrentItem());
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "今日のごはん");
+        intent.putExtra(Intent.EXTRA_TEXT, "今日のご飯はコレ！\nhttp://nanitabe.org?id=" + id);
         startActivity(Intent.createChooser(intent, "共有に使用するアプリを選択してください。"));
-    }
-
-    private void uraSearch(String query) {
-        if (TextUtils.isEmpty(query)) return;
-
-        this.analyzer.getSubject()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this.adapter::addItem);
-        this.analyzer.analyze(this.searchUrl + NtTextUtility.encode(query));
-        AppObservable.bindFragment(this, this.analyzer.getComplete())
-                .subscribe(isComplete -> checkRecipes());
     }
 
     @UiThread

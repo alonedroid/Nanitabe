@@ -3,7 +3,10 @@
         <attr name="selected" format="boolean"/>
         <attr name="text" format="string"/>
     </declare-styleable>
-    <declare-styleable name="Themes">
+
+    <declare-styleable name="NanitabeTheme">
         <attr name="ntInnerShadowViewStyle" format="reference"/>
+        <attr name="titleTextStyle" format="reference"/>
+        <attr name="editTextStyle" format="reference"/>
     </declare-styleable>
 </resources>

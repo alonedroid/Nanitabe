@@ -13,13 +13,12 @@ import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EService;
 import org.androidannotations.annotations.SystemService;
-import org.androidannotations.annotations.res.StringRes;
 
 import java.util.ArrayList;
 
-import alonedroid.com.nanitabe.MainActivity;
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.activity.ReceptionActivity;
 import alonedroid.com.nanitabe.scene.choice.NtTsukurepoAnalyzer;
 import alonedroid.com.nanitabe.sharedpreference.NtServicePreference;
 import alonedroid.com.nanitabe.utility.NtTextUtility;
@@ -34,6 +33,17 @@ public class UraSearchService extends Service {
 
     public static final String EXTRAS_QUERY = "extrasQuery";
 
+    public static final String SEARCH_SERVICE_COMPLETE_TICKER = "検索が完了しました";
+
+    public static final String SEARCH_SERVICE_STARTING_TICKER = "%1$sでレシピを検索します";
+    public static final String SEARCH_SERVICE_STARTING_TITLE = "レシピを検索しています";
+    public static final String SEARCH_SERVICE_STARTING_CONTENT = "処理を中断できます";
+    public static final String SEARCH_SERVICE_WORKING_TITLE = "レシピが見つかりました";
+    public static final String SEARCH_SERVICE_WORKING_CONTENT = "処理を中断してレシピを見れます";
+    public static final String SEARCH_SERVICE_COMPLETE_TITLE = "レシピの検索が完了しています";
+    public static final String SEARCH_SERVICE_COMPLETE_CONTENT = "%1$sの検索結果は%2$s件です";
+
+
     @App
     NtApplication app;
 
@@ -45,33 +55,6 @@ public class UraSearchService extends Service {
 
     @Bean
     NtServicePreference sharedPreference;
-
-    @StringRes
-    String searchUrl;
-
-    @StringRes
-    String searchServiceStartingTicker;
-
-    @StringRes
-    String searchServiceStartingTitle;
-
-    @StringRes
-    String searchServiceStartingContent;
-
-    @StringRes
-    String searchServiceWorkingTitle;
-
-    @StringRes
-    String searchServiceWorkingContent;
-
-    @StringRes
-    String searchServiceCompleteTicker;
-
-    @StringRes
-    String searchServiceCompleteTitle;
-
-    @StringRes
-    String searchServiceCompleteContent;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
@@ -110,14 +93,15 @@ public class UraSearchService extends Service {
                 .limit(ANALIZE_SERVICE_MAX_RECIPES)
                 .subscribe(this::addAndReport, this::onError, this::onLimitComplete));
         this.analyzer.setShowLog(false);
-        this.analyzer.analyze(this.searchUrl + query);
-        notifyRecipes(String.format(this.searchServiceStartingTicker, this.query), this.searchServiceStartingTitle, this.searchServiceStartingContent);
+        this.analyzer.analyze(this.app.getString(R.string.search_url) + query);
+        notifyRecipes(String.format(SEARCH_SERVICE_STARTING_TICKER, this.query)
+                , SEARCH_SERVICE_STARTING_TITLE, SEARCH_SERVICE_STARTING_CONTENT);
     }
 
     private void addAndReport(String recipe) {
         this.recipes.add(recipe);
         if (this.recipes.size() == 1) {
-            notifyRecipes(null, this.searchServiceWorkingTitle, this.searchServiceWorkingContent);
+            notifyRecipes(null, SEARCH_SERVICE_WORKING_TITLE, SEARCH_SERVICE_WORKING_CONTENT);
         }
 
         String recipes = Observable.from(this.recipes).reduce((ids, id) -> ids + "," + id).toBlocking().single();
@@ -133,13 +117,13 @@ public class UraSearchService extends Service {
     }
 
     private void onComplete() {
-        String content = String.format(this.searchServiceCompleteContent, this.query, this.recipes.size());
-        notifyRecipes(this.searchServiceCompleteTicker, this.searchServiceCompleteTitle, content);
+        String content = String.format(SEARCH_SERVICE_COMPLETE_CONTENT, this.query, this.recipes.size());
+        notifyRecipes(SEARCH_SERVICE_COMPLETE_TICKER, SEARCH_SERVICE_COMPLETE_TITLE, content);
         this.compositeSubscription.clear();
     }
 
     void notifyRecipes(String ticker, String title, String content) {
-        Intent intent = MainActivity.newIntent(this, this.query);
+        Intent intent = ReceptionActivity.newIntent(this, this.query);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
@@ -154,7 +138,7 @@ public class UraSearchService extends Service {
 
         this.notificationManager.cancelAll();
 
-        if (this.searchServiceCompleteTicker.equals(ticker)) {
+        if (SEARCH_SERVICE_COMPLETE_TICKER.equals(ticker)) {
             notification.vibrate = new long[]{100, 200, 100, 200};
             this.notificationManager.notify(R.string.app_name, notification);
         } else {

@@ -18,6 +18,7 @@
 
     <TextView
         android:id="@+id/history_title"
+        style="?attr/titleTextStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="2dip"
@@ -26,10 +27,12 @@
         android:layout_toRightOf="@id/history_image"
         android:background="#EFEFCF"
         android:padding="3dip"
+        android:text="test"
         />
 
     <TextView
         android:id="@+id/history_date"
+        style="?attr/titleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

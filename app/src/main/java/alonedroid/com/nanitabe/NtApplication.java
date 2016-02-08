@@ -2,15 +2,11 @@ package alonedroid.com.nanitabe;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.parse.Parse;
 import com.parse.ParseCrashReporting;
@@ -22,23 +18,20 @@ import org.androidannotations.annotations.UiThread;
 
 import alonedroid.com.nanitabe.activity.R;
 import lombok.Getter;
-import rx.Subscription;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
 
 @EApplication
 public class NtApplication extends Application {
 
     @Getter
-    private static PublishSubject<Fragment> mainRouter = PublishSubject.create();
-
-    @Getter
-    private static BehaviorSubject<Fragment> router = BehaviorSubject.create();
-
-    @Getter
     private RequestQueue queue;
 
-    private Subscription routerSubscription;
+    public static int MODE;
+
+    public static int MODE_NORMAL = 100;
+
+    public static int MODE_RECEPTION = 200;
+
+    public static int MODE_SHARE = 300;
 
     Toast toast;
 
@@ -64,18 +57,11 @@ public class NtApplication extends Application {
     @Background
     public void start() {
         this.queue.start();
-        this.routerSubscription = router.subscribe(mainRouter::onNext);
     }
 
     @Background
     public void stop() {
         this.queue.stop();
-        this.routerSubscription.unsubscribe();
-        mainRouter.onNext(null);
-    }
-
-    public void request(String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        this.queue.add(new StringRequest(Request.Method.GET, url, listener, errorListener));
     }
 
     public void hiddelKeyboard(View view) {
@@ -88,7 +74,15 @@ public class NtApplication extends Application {
         inputMethodManager.showSoftInput(view, 0);
     }
 
-    public int getColor(int color) {
-        return getResources().getColor(color);
+    public void modeReception() {
+        NtApplication.MODE = NtApplication.MODE_RECEPTION;
+    }
+
+    public void modeNormal() {
+        NtApplication.MODE = NtApplication.MODE_NORMAL;
+    }
+
+    public void modeShare() {
+        NtApplication.MODE = NtApplication.MODE_SHARE;
     }
 }

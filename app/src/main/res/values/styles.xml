@@ -1,20 +1,36 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="BrownButton">
+        <item name="android:background">@drawable/custom_button</item>
+        <item name="android:gravity">center|center</item>
+        <item name="android:textColor">@color/white_300</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <!-- Text theme. -->
+    <style name="TextAppearance.NanitabeBase" parent="android:TextAppearance.Holo"/>
+
+    <style name="TextAppearance.Nanitabe" parent="TextAppearance.NanitabeBase"/>
+
+    <style name="TextAppearance.Nanitabe.Title" parent="TextAppearance.Nanitabe">
+        <item name="android:textSize">@dimen/nt_history_title_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    le>
+
+    <style name="Widget.NanitabeBase" parent="android:Widget.Holo"/>
+
+    <style name="Widget.Nanitabe" parent="Widget.NanitabeBase"/>
+
+    <style name="Widget.Nanitabe.Title"/>
+
+    <style name="Widget.Nanitabe.Title.Text">
+        <item name="android:textAppearance">@style/TextAppearance.Nanitabe.Title</item>
     </style>
 
+    <style name="Widget.Nanitabe.Edit"/>
+
+    <style name="Widget.Nanitabe.Edit.Text">
+        <item name="android:textSize">@dimen/nt_history_title_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

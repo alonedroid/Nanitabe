@@ -13,18 +13,16 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.annotations.res.StringRes;
 import org.json.JSONException;
 
-import alonedroid.com.nanitabe.MainActivity;
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
-import alonedroid.com.nanitabe.scene.top.NtTopFragment;
+import alonedroid.com.nanitabe.activity.VariableActivity;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import rx.subscriptions.CompositeSubscription;
 
 @EFragment(R.layout.fragment_nt_search)
-public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDown {
+public class NtSearchFragment extends Fragment implements VariableActivity.NtOnKeyDown {
 
     @App
     NtApplication app;
@@ -34,30 +32,6 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     @FragmentArg
     String argRecipeId;
-
-    @StringRes
-    String messageAddFavorite;
-
-    @StringRes
-    String messageRemoveFavorite;
-
-    @StringRes
-    String searchUrl;
-
-    @StringRes
-    String recipeUrl;
-
-    @StringRes
-    String topUrl;
-
-    @StringRes
-    String notFavorite;
-
-    @StringRes
-    String alreadyFavorite;
-
-    @StringRes
-    String error;
 
     @ViewById
     WebView ntSearchWeb;
@@ -79,9 +53,14 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
-    public static NtSearchFragment newInstance(String query, String id) {
+    public static NtSearchFragment newSearchInstance(String query) {
         NtSearchFragment_.FragmentBuilder_ builder_ = NtSearchFragment_.builder();
         builder_.argQuery(query);
+        return builder_.build();
+    }
+
+    public static NtSearchFragment newOpenInstance(String id) {
+        NtSearchFragment_.FragmentBuilder_ builder_ = NtSearchFragment_.builder();
         builder_.argRecipeId(id);
         return builder_.build();
     }
@@ -91,7 +70,7 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
         try {
             this.dataManager.table(NtDataManager.TABLE.FAVORITE);
         } catch (JSONException e) {
-            this.app.show(this.error);
+            this.app.show(this.app.getString(R.string.error));
             getActivity().finish();
         }
         initSubject();
@@ -100,7 +79,7 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     private void initSubject() {
         this.compositeSubscription.add(this.webClient.getUrl()
-                .map(url -> url.matches(this.topUrl + "/recipe/[0-9]{1,9}"))
+                .map(url -> url.matches(this.app.getString(R.string.top_url) + "/recipe/[0-9]{1,9}"))
                 .subscribe(this.ntSearchFavorite::setEnabled));
         this.compositeSubscription.add(this.webClient.getUrl()
                 .map(this.dataManager::exists)
@@ -111,13 +90,13 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     private void setFavoriteActionImage(boolean isFavorite) {
         this.ntSearchFavorite.setSelected(isFavorite);
-        this.ntSearchFavorite.setText(isFavorite ? this.notFavorite : this.alreadyFavorite);
+        this.ntSearchFavorite.setText(isFavorite ? this.app.getString(R.string.not_favorite) : this.app.getString(R.string.already_favorite));
     }
 
     private String generateUrl() {
-        if (!TextUtils.isEmpty(this.argRecipeId)) return this.recipeUrl + this.argRecipeId;
-        if (!TextUtils.isEmpty(this.argQuery)) return this.searchUrl + this.argQuery;
-        return this.topUrl;
+        if (!TextUtils.isEmpty(this.argRecipeId)) return this.app.getString(R.string.recipe_url) + this.argRecipeId;
+        if (!TextUtils.isEmpty(this.argQuery)) return this.app.getString(R.string.search_url) + this.argQuery;
+        return this.app.getString(R.string.top_url);
     }
 
     private void initWebView(String initUrl) {
@@ -133,10 +112,10 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
         if (this.dataManager.exists(this.webClient.getUrl().getValue())) {
             removeFavorite();
-            this.app.show(this.messageRemoveFavorite);
+            this.app.show(this.app.getString(R.string.message_remove_favorite));
         } else {
             addFavorite();
-            this.app.show(this.messageAddFavorite);
+            this.app.show(this.app.getString(R.string.message_add_favorite));
         }
     }
 
@@ -162,7 +141,7 @@ public class NtSearchFragment extends Fragment implements MainActivity.NtOnKeyDo
 
     @Click
     void ntSearchTop() {
-        NtApplication.getRouter().onNext(NtTopFragment.newInstance());
+        getActivity().finish();
     }
 
     @Override

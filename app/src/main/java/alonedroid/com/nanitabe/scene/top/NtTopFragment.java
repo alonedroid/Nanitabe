@@ -1,21 +1,26 @@
 package alonedroid.com.nanitabe.scene.top;
 
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import alonedroid.com.nanitabe.NtApplication;
+import alonedroid.com.nanitabe.NtRouter;
 import alonedroid.com.nanitabe.activity.R;
-import alonedroid.com.nanitabe.scene.history.NtHistoryFragment;
-import alonedroid.com.nanitabe.scene.search.NtSearchFragment;
-import alonedroid.com.nanitabe.scene.select.NtSelectFragment;
-import alonedroid.com.nanitabe.scene.uratop.NtUraTopFragment;
+import alonedroid.com.nanitabe.activity.VariableActivity;
 
 @EFragment(R.layout.fragment_nt_top)
 public class NtTopFragment extends Fragment {
+
+    @App
+    NtApplication app;
 
     @ViewById
     TextView ntTopSearchText;
@@ -25,23 +30,42 @@ public class NtTopFragment extends Fragment {
         return builder_.build();
     }
 
+    @AfterViews
+    void onAfterViews() {
+        this.ntTopSearchText.setOnKeyListener((v, keyCode, event) -> onKey(keyCode, event));
+    }
+
     @Click
     void modeChange() {
-        NtApplication.getRouter().onNext(NtUraTopFragment.newInstance());
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getUraTopMap()));
     }
 
     @Click
     void ntTopSearch() {
-        NtApplication.getRouter().onNext(NtSearchFragment.newInstance(this.ntTopSearchText.getText().toString(), null));
+        String query = this.ntTopSearchText.getText().toString();
+        if (TextUtils.isEmpty(query)) {
+            this.app.show(this.app.getString(R.string.no_query));
+            return;
+        }
+
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getTopSearchMap(query)));
     }
 
     @Click
     void ntTopList() {
-        NtApplication.getRouter().onNext(NtSelectFragment.newInstance());
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getSelectMap()));
     }
 
     @Click
     void ntTopHistory() {
-        NtApplication.getRouter().onNext(NtHistoryFragment.newInstance());
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getHistoryMap()));
+    }
+
+    boolean onKey(int keyCode, KeyEvent event) {
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            ntTopSearch();
+            return true;
+        }
+        return false;
     }
 }

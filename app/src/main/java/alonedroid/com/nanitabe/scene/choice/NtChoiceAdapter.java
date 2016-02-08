@@ -1,79 +1,136 @@
 package alonedroid.com.nanitabe.scene.choice;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
-import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
+import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.SystemService;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
+import lombok.Getter;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 
-public class NtChoiceAdapter extends FragmentStatePagerAdapter {
+@EBean
+public class NtChoiceAdapter extends PagerAdapter {
 
-    private ArrayList<String> proposeRecipes;
+    @App
+    NtApplication app;
 
-    private SparseArray<NtChoiceImageFragment> fragments = new SparseArray<>();
+    @RootContext
+    Context context;
 
-    private TextView titleView;
+    @SystemService
+    LayoutInflater layoutInflater;
 
-    private Subscription titleSubscription;
+    @Getter
+    private PublishSubject<String> titleSubject = PublishSubject.create();
 
-    public NtChoiceAdapter(Context context, FragmentManager fm, List<String> urls) {
-        super(fm);
-        this.proposeRecipes = new ArrayList<>(urls);
-    }
+    private Subscription[] subscriptions = new Subscription[2];
 
-    @Override
-    public Fragment getItem(int position) {
-        this.fragments.put(position, NtChoiceImageFragment.newInstance(this.proposeRecipes.get(position)));
+    private ArrayList<NtVisual> recipes = new ArrayList<>();
 
-        if (this.titleSubscription == null) {
-            observeRecipeTitle(this.fragments.get(position));
-        }
-
-        return this.fragments.get(position);
-    }
+    private SparseArray<NetworkImageView> imageViews = new SparseArray<>();
 
     @Override
     public int getCount() {
-        return this.proposeRecipes.size();
+        return this.recipes.size();
     }
 
-    public void setRecipeTitle(TextView title, int position) {
-        this.titleView = title;
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        View view = this.layoutInflater.inflate(R.layout.fragment_nt_choice_image, null);
+        container.addView(view);
+        this.imageViews.put(position, (NetworkImageView) view);
+        return view;
+    }
 
-        if (this.fragments.get(position) == null || this.fragments.get(position).getTitle().getValue() == null) {
-            this.titleView.setText(R.string.loading);
-            if (this.fragments.get(position) != null) {
-                observeRecipeTitle(this.fragments.get(position));
-            }
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        if (object instanceof NetworkImageView) {
+            // TODO メモリリークしてたら使ってみる
+//            ((BitmapDrawable)((NetworkImageView)object).getDrawable()).getBitmap().recycle();
+        }
+        container.removeView((View) object);
+    }
+
+    @Override
+    public boolean isViewFromObject(View view, Object object) {
+        return object.equals(view);
+    }
+
+    void setPosition(int position) {
+        if (this.recipes.size() <= position) return;
+
+        NtVisual visual = this.recipes.get(position);
+        if (visual.isPrepare()) {
+            this.titleSubject.onNext(visual.getTitle().getValue());
+            this.imageViews.get(position).setImageUrl(visual.getImage().getValue(), new ImageLoader(this.app.getQueue(), new ImageLruCache()));
         } else {
-            this.titleView.setText(this.fragments.get(position).getTitle().getValue());
+            subscribe(position);
+        }
+    }
+
+    private void subscribe(int position) {
+        unsubscribe();
+
+        NtVisual visual = this.recipes.get(position);
+        this.subscriptions[0] = visual.getTitle()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this.titleSubject::onNext);
+        this.subscriptions[1] = visual.getImage()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(image -> getItem(position)
+                        .setImageUrl(visual.getImage().getValue(), new ImageLoader(this.app.getQueue(), new ImageLruCache())));
+    }
+
+    void unsubscribe() {
+        unsubscribe(this.subscriptions[0]);
+        unsubscribe(this.subscriptions[1]);
+    }
+
+    private void unsubscribe(Subscription subscription) {
+        if (subscription == null || subscription.isUnsubscribed()) return;
+        subscription.unsubscribe();
+    }
+
+    private NetworkImageView getItem(int position) {
+        NetworkImageView view = this.imageViews.get(position);
+        if (view != null) return view;
+        return (NetworkImageView) instantiateItem(new LinearLayout(this.context), position);
+    }
+
+    public void addItem(String[] ids) {
+        Observable.from(ids).forEach(this::addItem);
+    }
+
+    public void addItem(String id) {
+        NtVisual visual = NtVisual_.getInstance_(this.context);
+        visual.analyze(id);
+        this.recipes.add(visual);
+        notifyDataSetChanged();
+        if (this.recipes.size() == 1) {
+            setPosition(0);
         }
     }
 
     public String getId(int position) {
-        if (this.proposeRecipes.size() <= position) return "";
-        return this.proposeRecipes.get(position);
-    }
-
-    private void observeRecipeTitle(NtChoiceImageFragment fragment) {
-        if (this.titleSubscription != null) {
-            this.titleSubscription.unsubscribe();
-        }
-        this.titleSubscription = fragment.getTitle()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this.titleView::setText);
-    }
-
-    public void addItem(String recipe) {
-        this.proposeRecipes.add(recipe);
-        notifyDataSetChanged();
+        if (this.recipes.size() <= position) return "";
+        return this.recipes.get(position).getId();
     }
 }
