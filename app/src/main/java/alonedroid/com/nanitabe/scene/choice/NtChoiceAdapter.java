@@ -19,7 +19,7 @@ import org.androidannotations.annotations.SystemService;
 import java.util.ArrayList;
 
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.view.NtChoiceItemView;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscription;
@@ -54,9 +54,9 @@ public class NtChoiceAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = this.layoutInflater.inflate(R.layout.fragment_nt_choice_image, null);
+        NtChoiceItemView view = NtChoiceItemView.newInstance(context);
         container.addView(view);
-        this.imageViews.put(position, (NetworkImageView) view);
+        this.imageViews.put(position, view.getNetworkImageView());
         return view;
     }
 
@@ -80,7 +80,10 @@ public class NtChoiceAdapter extends PagerAdapter {
         NtVisual visual = this.recipes.get(position);
         if (visual.isPrepare()) {
             this.titleSubject.onNext(visual.getTitle().getValue());
-            this.imageViews.get(position).setImageUrl(visual.getImage().getValue(), new ImageLoader(this.app.getQueue(), new ImageLruCache()));
+            this.imageViews.get(position)
+                    .setImageUrl(
+                            visual.getImage().getValue(),
+                            new ImageLoader(this.app.getQueue(), new ImageLruCache()));
         } else {
             subscribe(position);
         }
@@ -96,7 +99,9 @@ public class NtChoiceAdapter extends PagerAdapter {
         this.subscriptions[1] = visual.getImage()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(image -> getItem(position)
-                        .setImageUrl(visual.getImage().getValue(), new ImageLoader(this.app.getQueue(), new ImageLruCache())));
+                        .setImageUrl(
+                                visual.getImage().getValue(),
+                                new ImageLoader(this.app.getQueue(), new ImageLruCache())));
     }
 
     void unsubscribe() {

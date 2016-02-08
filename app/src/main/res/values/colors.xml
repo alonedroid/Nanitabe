@@ -2,12 +2,13 @@
 <resources>
     <color name="alpha">#00000000</color>
     <color name="black">#000000</color>
+    <color name="trans_23">#e0232323</color>
     <color name="brown_500">#795548</color>
     <color name="brown_600">#6D4C41</color>
     <color name="white_300">#E0E0E0</color>
     <color name="grey_600">#424242</color>
-    <color name="selected_brown_on">#E65100</color>
-    <color name="selected_brown_off">#FDF4D4</color>
+    <color name="selected_brown_on">#e65100</color>
+    <color name="selected_brown_off">#fdf4d4</color>
     <color name="inner_shadow_start">#00000000</color>
     <color name="inner_shadow_end">#99000000</color>
     <color name="sp_maccha">#728626</color>
