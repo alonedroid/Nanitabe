@@ -30,6 +30,12 @@ public class NtTopFragment extends Fragment {
         return builder_.build();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.app.modeNormal();
+    }
+
     @AfterViews
     void onAfterViews() {
         this.ntTopSearchText.setOnKeyListener((v, keyCode, event) -> onKey(keyCode, event));

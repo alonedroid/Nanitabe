@@ -1,7 +1,6 @@
 package alonedroid.com.nanitabe.scene.select;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.widget.GridView;
 
@@ -37,8 +36,6 @@ public class NtSelectFragment extends Fragment {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private NtSelectAdapter adapter;
-
-    private boolean self = true;
 
     public static NtSelectFragment newInstance() {
         NtSelectFragment_.FragmentBuilder_ builder_ = NtSelectFragment_.builder();
@@ -106,27 +103,6 @@ public class NtSelectFragment extends Fragment {
 
     @Click
     void ntSelectDone() {
-        if (this.self) {
-            ntSelectOpen();
-        } else {
-            ntSelectSend();
-        }
-    }
-
-    private String collectSelectedIds() {
-        return (String) Observable.from(this.adapter.getSelectedItems())
-                .map(url -> Observable.from(url.split("/")).last())
-                .reduce(null, (ids, id) -> (ids == null) ? id : ids + "," + id)
-                .toBlocking().single();
-    }
-
-    private List<String> collectSelectedIdsArray() {
-        return Observable.from(this.adapter.getSelectedItems())
-                .map(url -> Observable.from(url.split("/")).toBlocking().last())
-                .toList().toBlocking().single();
-    }
-
-    private void ntSelectOpen() {
         if (this.adapter.getSelectedItems().length == 0) return;
 
         List<String> idList = collectSelectedIdsArray();
@@ -137,20 +113,13 @@ public class NtSelectFragment extends Fragment {
         startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getChoiceMap(StringUtil.join(idList, ","))));
     }
 
-    private void openRecipe(String id) {
-        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
+    private List<String> collectSelectedIdsArray() {
+        return Observable.from(this.adapter.getSelectedItems())
+                .map(url -> Observable.from(url.split("/")).toBlocking().last())
+                .toList().toBlocking().single();
     }
 
-    private void ntSelectSend() {
-        if (this.adapter.getSelectedItems().length == 0) return;
-
-        String ids = collectSelectedIds();
-        // TODO.Activity側にインスタンスの生成メソッドを実装
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "ごはん候補");
-        intent.putExtra(Intent.EXTRA_TEXT, "http://nanitabe.choice?id=" + ids);
-        startActivity(Intent.createChooser(intent, "共有に使用するアプリを選択してください。"));
+    private void openRecipe(String id) {
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
     }
 }

@@ -43,7 +43,7 @@ public class ShareActivity extends FragmentActivity {
 
         String[] recipes = recipe.split(",");
         if (recipes.length == 1) {
-            startActivity(VariableActivity.newIntent(this, NtRouter.getTopSearchMap(recipe)));
+            startActivity(VariableActivity.newIntent(this, NtRouter.getRecipeOpenMap(recipe)));
         } else {
             startActivity(VariableActivity.newIntent(this, NtRouter.getChoiceMap(recipe)));
         }
