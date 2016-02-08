@@ -1,0 +1,12 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="oval" android:useLevel="false">
+            <solid android:color="@color/sp_byakugun"/>
+        </shape>
+    </item>
+    <item android:state_enabled="true">
+        <shape android:shape="oval" android:useLevel="false">
+            <solid android:color="@color/sp_byakugun_pare"/>
+        </shape>
+    </item>
+</selector>

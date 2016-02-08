@@ -1,6 +1,7 @@
 package alonedroid.com.nanitabe.scene.choice;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -63,8 +64,8 @@ public class NtChoiceAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         if (object instanceof NetworkImageView) {
-            // TODO メモリリークしてたら使ってみる
-//            ((BitmapDrawable)((NetworkImageView)object).getDrawable()).getBitmap().recycle();
+            if (((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap() == null) return;
+            ((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap().recycle();
         }
         container.removeView((View) object);
     }
