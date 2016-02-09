@@ -118,7 +118,7 @@ public class NtChoiceAdapter extends PagerAdapter {
     private NetworkImageView getItem(int position) {
         NetworkImageView view = this.imageViews.get(position);
         if (view != null) return view;
-        return (NetworkImageView) instantiateItem(new LinearLayout(this.context), position);
+        return ((NtChoiceItemView) instantiateItem(new LinearLayout(this.context), position)).getNetworkImageView();
     }
 
     public void addItem(String[] ids) {

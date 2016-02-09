@@ -16,6 +16,9 @@
     <!-- Application Layout Size -->
     <dimen name="default_view_height">45dp</dimen>
     <dimen name="option_view_height">60dp</dimen>
+    <dimen name="choice_image_side_width">50dp</dimen>
+    <dimen name="choice_image_width">300dp</dimen>
+    <dimen name="choice_image_height">295dp</dimen>
     <!-- Text Layout Size -->
     <dimen name="nt_history_title_text_size">14sp</dimen>
 </resources>

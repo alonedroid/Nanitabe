@@ -51,16 +51,22 @@ public class NtIndicatorView extends FrameLayout {
     }
 
     private void animateTranslationX(float x) {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this.idcViewCurrent, "translationX", this.idcViewCurrent.getTranslationX(), x);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(
+                this.idcViewCurrent,
+                "translationX",
+                this.idcViewCurrent.getTranslationX(),
+                x);
         objectAnimator.setDuration(300);
         objectAnimator.start();
     }
 
     public void onGlobalLayout() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            this.idcViewRoot.getViewTreeObserver().removeGlobalOnLayoutListener(this.globalLayoutListener);
+            this.idcViewRoot.getViewTreeObserver()
+                    .removeGlobalOnLayoutListener(this.globalLayoutListener);
         } else {
-            this.idcViewRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this.globalLayoutListener);
+            this.idcViewRoot.getViewTreeObserver()
+                    .removeOnGlobalLayoutListener(this.globalLayoutListener);
         }
 
         this.idcWidth = this.idcViewCurrent.getWidth();
