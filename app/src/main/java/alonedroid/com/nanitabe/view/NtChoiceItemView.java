@@ -1,5 +1,7 @@
 package alonedroid.com.nanitabe.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.ViewGroup;
@@ -17,24 +19,24 @@ import org.androidannotations.annotations.res.DimensionPixelOffsetRes;
 
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
+import lombok.Setter;
 
-@EViewGroup(R.layout.fragment_nt_choice_image)
+@EViewGroup(R.layout.view_nt_choice_image)
 public class NtChoiceItemView extends RelativeLayout {
 
     @App
     NtApplication app;
-
     @ViewById
     NetworkImageView choiceImagePhoto;
-
     @ViewById
     TextView choiceImageText;
-
     @DimensionPixelOffsetRes
     int choiceImageWidth;
-
     @DimensionPixelOffsetRes
     int choiceImageSideWidth;
+    @Setter
+    String ingredient;
+
 
     public static NtChoiceItemView newInstance(Context context) {
         NtChoiceItemView view = NtChoiceItemView_.build(context);
@@ -66,7 +68,13 @@ public class NtChoiceItemView extends RelativeLayout {
             ViewGroup.LayoutParams layoutParams = choiceImageText.getLayoutParams();
             layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
             choiceImageText.setLayoutParams(layoutParams);
-
+        });
+        widthValueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                choiceImageText.setText(ingredient);
+            }
         });
         widthValueAnimator.setDuration(300);
         widthValueAnimator.setInterpolator(new DecelerateInterpolator());

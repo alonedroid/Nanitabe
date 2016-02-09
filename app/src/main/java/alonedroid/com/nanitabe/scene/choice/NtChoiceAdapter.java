@@ -42,11 +42,11 @@ public class NtChoiceAdapter extends PagerAdapter {
     @Getter
     private PublishSubject<String> titleSubject = PublishSubject.create();
 
-    private Subscription[] subscriptions = new Subscription[2];
+    private Subscription[] subscriptions = new Subscription[3];
 
     private ArrayList<NtVisual> recipes = new ArrayList<>();
 
-    private SparseArray<NetworkImageView> imageViews = new SparseArray<>();
+    private SparseArray<NtChoiceItemView> imageViews = new SparseArray<>();
 
     @Override
     public int getCount() {
@@ -57,14 +57,15 @@ public class NtChoiceAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         NtChoiceItemView view = NtChoiceItemView.newInstance(context);
         container.addView(view);
-        this.imageViews.put(position, view.getNetworkImageView());
+        this.imageViews.put(position, view);
         return view;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         if (object instanceof NetworkImageView) {
-            if (((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap() == null) return;
+            if (((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap() == null)
+                return;
             ((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap().recycle();
         }
         container.removeView((View) object);
@@ -81,7 +82,7 @@ public class NtChoiceAdapter extends PagerAdapter {
         NtVisual visual = this.recipes.get(position);
         if (visual.isPrepare()) {
             this.titleSubject.onNext(visual.getTitle().getValue());
-            this.imageViews.get(position)
+            this.imageViews.get(position).getNetworkImageView()
                     .setImageUrl(
                             visual.getImage().getValue(),
                             new ImageLoader(this.app.getQueue(), new ImageLruCache()));
@@ -100,14 +101,20 @@ public class NtChoiceAdapter extends PagerAdapter {
         this.subscriptions[1] = visual.getImage()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(image -> getItem(position)
+                        .getNetworkImageView()
                         .setImageUrl(
                                 visual.getImage().getValue(),
                                 new ImageLoader(this.app.getQueue(), new ImageLruCache())));
+        this.subscriptions[2] = visual.getIngredients()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(text -> getItem(position)
+                        .setIngredient(text));
     }
 
     void unsubscribe() {
-        unsubscribe(this.subscriptions[0]);
-        unsubscribe(this.subscriptions[1]);
+        for (Subscription sub : this.subscriptions) {
+            unsubscribe(sub);
+        }
     }
 
     private void unsubscribe(Subscription subscription) {
@@ -115,10 +122,10 @@ public class NtChoiceAdapter extends PagerAdapter {
         subscription.unsubscribe();
     }
 
-    private NetworkImageView getItem(int position) {
-        NetworkImageView view = this.imageViews.get(position);
+    private NtChoiceItemView getItem(int position) {
+        NtChoiceItemView view = this.imageViews.get(position);
         if (view != null) return view;
-        return ((NtChoiceItemView) instantiateItem(new LinearLayout(this.context), position)).getNetworkImageView();
+        return (NtChoiceItemView) instantiateItem(new LinearLayout(this.context), position);
     }
 
     public void addItem(String[] ids) {

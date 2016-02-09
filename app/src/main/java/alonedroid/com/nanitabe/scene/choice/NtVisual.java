@@ -5,6 +5,8 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EBean;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
@@ -24,6 +26,8 @@ public class NtVisual {
     @Getter
     private BehaviorSubject<String> image = BehaviorSubject.create("");
     @Getter
+    private BehaviorSubject<String> ingredients = BehaviorSubject.create("");
+    @Getter
     private boolean prepare;
 
     @Background
@@ -33,9 +37,21 @@ public class NtVisual {
             this.id = id;
             this.image.onNext(doc.select(".main_photo").first().getElementsByTag("img").attr("src"));
             this.title.onNext(doc.select(".recipe_title").first().text());
+            StringBuffer sb = new StringBuffer(doc.select(".servings").first().text());
+            Elements ingredients = doc.select("#ingredients-list").first().getElementsByTag("dl");
+            for (Element ing : ingredients) {
+                sb.append("\n").append(ingredientFormat(
+                        ing.getElementsByTag("dt").first().text(),
+                        ing.getElementsByTag("dd").first().text()));
+            }
+            this.ingredients.onNext(sb.toString());
             this.prepare = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String ingredientFormat(String _ingredient, String _quantity) {
+        return (_ingredient + "　　　　　　　　　　　　").substring(0, 12) + "・・・" + _quantity;
     }
 }
