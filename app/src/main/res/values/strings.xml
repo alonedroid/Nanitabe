@@ -25,8 +25,6 @@
     <string name="back_search_hint">最大で30件、見つかるまで検索します。\nアプリを終了しても検索が続きます。</string>
     <string name="no_query">検索ワードを入力してください</string>
     <string name="title_activity_share">レシピを選ぶ</string>
-    <string name="title_activity_variable">VariableActivity</string>
+    <string name="ingredient_navi">＜材料</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 </resources>

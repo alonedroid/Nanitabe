@@ -87,6 +87,7 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="rxandroid-0.24.0" level="project" />
+
     <orderEntry type="library" exported="" name="lombok-1.14.2" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.0.8" level="project" />
     <orderEntry type="library" exported="" name="bolts-applinks-1.4.0" level="project" />

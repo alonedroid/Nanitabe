@@ -212,7 +212,9 @@ public class NtChoiceFragment extends Fragment {
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "オススメレシピ");
-        intent.putExtra(Intent.EXTRA_TEXT, "ナニタベを起動して御飯を選んでね♪\nhttp://nanitabe.org?id=" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
+        intent.putExtra(Intent.EXTRA_TEXT,
+                "ナニタベを起動して御飯を選んでね♪\nhttp://nanitabe.org?id=" +
+                        StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
         startActivity(Intent.createChooser(intent, "シェアするアプリを選択してください。"));
     }
 
