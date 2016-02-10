@@ -86,6 +86,7 @@ public class NtChoiceAdapter extends PagerAdapter {
                     .setImageUrl(
                             visual.getImage().getValue(),
                             new ImageLoader(this.app.getQueue(), new ImageLruCache()));
+            this.imageViews.get(position).setIngredient(visual.getIngredients().getValue());
         } else {
             subscribe(position);
         }
@@ -106,9 +107,7 @@ public class NtChoiceAdapter extends PagerAdapter {
                                 visual.getImage().getValue(),
                                 new ImageLoader(this.app.getQueue(), new ImageLruCache())));
         this.subscriptions[2] = visual.getIngredients()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(text -> getItem(position)
-                        .setIngredient(text));
+                .subscribe(text -> getItem(position).setIngredient(text));
     }
 
     void unsubscribe() {

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -16,6 +17,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.DimensionPixelOffsetRes;
+import org.androidannotations.annotations.res.StringRes;
 
 import alonedroid.com.nanitabe.NtApplication;
 import alonedroid.com.nanitabe.activity.R;
@@ -30,12 +32,17 @@ public class NtChoiceItemView extends RelativeLayout {
     NetworkImageView choiceImagePhoto;
     @ViewById
     TextView choiceImageText;
+    @ViewById
+    ScrollView choiceImageTextArea;
     @DimensionPixelOffsetRes
     int choiceImageWidth;
     @DimensionPixelOffsetRes
     int choiceImageSideWidth;
+    @StringRes
+    String ingredientNavi;
     @Setter
     String ingredient;
+    private String mIngredientText;
 
 
     public static NtChoiceItemView newInstance(Context context) {
@@ -56,24 +63,41 @@ public class NtChoiceItemView extends RelativeLayout {
     }
 
     @Click
+    void choiceImageText() {
+        toggleIngredientList();
+    }
+
+    @Click
     void choiceImageRoot() {
-        int currentWidth = choiceImageText.getLayoutParams().width;
+        toggleIngredientList();
+    }
+
+    private void toggleIngredientList() {
+        int currentWidth = choiceImageTextArea.getLayoutParams().width;
         ValueAnimator widthValueAnimator;
         if (currentWidth <= choiceImageSideWidth) {
             widthValueAnimator = ValueAnimator.ofInt(choiceImageSideWidth, choiceImageWidth);
+            mIngredientText = ingredient;
         } else {
             widthValueAnimator = ValueAnimator.ofInt(choiceImageWidth, choiceImageSideWidth);
+            mIngredientText = ingredientNavi;
         }
         widthValueAnimator.addUpdateListener(valueAnimator -> {
-            ViewGroup.LayoutParams layoutParams = choiceImageText.getLayoutParams();
+            ViewGroup.LayoutParams layoutParams = choiceImageTextArea.getLayoutParams();
             layoutParams.width = (Integer) valueAnimator.getAnimatedValue();
-            choiceImageText.setLayoutParams(layoutParams);
+            choiceImageTextArea.setLayoutParams(layoutParams);
         });
         widthValueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                choiceImageText.setText("");
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                choiceImageText.setText(ingredient);
+                choiceImageText.setText(mIngredientText);
             }
         });
         widthValueAnimator.setDuration(300);
