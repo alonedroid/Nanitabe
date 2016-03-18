@@ -1,6 +1,7 @@
 package alonedroid.com.nanitabe.view;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,12 +44,20 @@ public class NtHistoryItemView extends RelativeLayout {
         super(context);
     }
 
+    public NtHistoryItemView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     public void setImage(String imageUrl) {
         this.historyImage.setImageUrl(imageUrl, new ImageLoader(this.app.getQueue(), new ImageLruCache()));
     }
 
     public void setTitle(String title) {
         this.historyTitle.setText(title);
+    }
+
+    public String getTitle() {
+        return this.historyTitle.getText().toString();
     }
 
     public void setDate(String date) {
