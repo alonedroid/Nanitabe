@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EBean;
@@ -63,10 +62,10 @@ public class NtChoiceAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        if (object instanceof NetworkImageView) {
-            if (((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap() == null)
+        if (object instanceof NtChoiceItemView) {
+            if (((BitmapDrawable) ((NtChoiceItemView) object).getNetworkImageView().getDrawable()).getBitmap() == null)
                 return;
-            ((BitmapDrawable) ((NetworkImageView) object).getDrawable()).getBitmap().recycle();
+            ((BitmapDrawable) ((NtChoiceItemView) object).getNetworkImageView().getDrawable()).getBitmap().recycle();
         }
         container.removeView((View) object);
     }
