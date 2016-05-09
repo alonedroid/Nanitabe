@@ -59,6 +59,7 @@ public class NtRouter {
     public static Fragment route(String map) {
         String[] params = map.split(SEPARATOR);
         if (NtChoiceFragment.class.getSimpleName().equals(params[0])) {
+            if (params.length < 2) return NtTopFragment.newInstance();
             return getChoiceFragment(params);
         } else if (NtTopFragment.class.getSimpleName().equals(params[0])) {
             return NtTopFragment.newInstance();

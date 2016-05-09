@@ -27,7 +27,6 @@
         android:layout_toRightOf="@id/history_image"
         android:background="#EFEFCF"
         android:padding="3dip"
-        android:text="test"
         />
 
     <TextView

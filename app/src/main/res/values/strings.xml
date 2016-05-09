@@ -26,5 +26,7 @@
     <string name="no_query">検索ワードを入力してください</string>
     <string name="title_activity_share">レシピを選ぶ</string>
     <string name="ingredient_navi">＜材料</string>
+    <string name="trend_word">イマのオススメワード！</string>
+    <string name="recomm_word">人気のワード！</string>
 
 </resources>

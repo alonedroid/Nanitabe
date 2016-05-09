@@ -1,0 +1,27 @@
+<FrameLayout
+    android:id="@+id/card_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/card_photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center|center"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/card_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_space_56dp"
+        android:layout_gravity="bottom|left"
+        android:background="@color/trans_23ae"
+        android:gravity="center|left"
+        android:paddingLeft="@dimen/dimen_space_16dp"
+        android:textColor="@color/white_300"
+        />
+</FrameLayout>
