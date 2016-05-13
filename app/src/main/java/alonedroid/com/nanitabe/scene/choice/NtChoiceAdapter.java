@@ -1,6 +1,7 @@
 package alonedroid.com.nanitabe.scene.choice;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EBean;
@@ -19,7 +19,7 @@ import org.androidannotations.annotations.SystemService;
 import java.util.ArrayList;
 
 import alonedroid.com.nanitabe.NtApplication;
-import alonedroid.com.nanitabe.activity.R;
+import alonedroid.com.nanitabe.view.NtChoiceItemView;
 import lombok.Getter;
 import rx.Observable;
 import rx.Subscription;
@@ -41,11 +41,11 @@ public class NtChoiceAdapter extends PagerAdapter {
     @Getter
     private PublishSubject<String> titleSubject = PublishSubject.create();
 
-    private Subscription[] subscriptions = new Subscription[2];
+    private Subscription[] subscriptions = new Subscription[3];
 
     private ArrayList<NtVisual> recipes = new ArrayList<>();
 
-    private SparseArray<NetworkImageView> imageViews = new SparseArray<>();
+    private SparseArray<NtChoiceItemView> imageViews = new SparseArray<>();
 
     @Override
     public int getCount() {
@@ -54,17 +54,18 @@ public class NtChoiceAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = this.layoutInflater.inflate(R.layout.fragment_nt_choice_image, null);
+        NtChoiceItemView view = NtChoiceItemView.newInstance(context);
         container.addView(view);
-        this.imageViews.put(position, (NetworkImageView) view);
+        this.imageViews.put(position, view);
         return view;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        if (object instanceof NetworkImageView) {
-            // TODO メモリリークしてたら使ってみる
-//            ((BitmapDrawable)((NetworkImageView)object).getDrawable()).getBitmap().recycle();
+        if (object instanceof NtChoiceItemView) {
+            if (((BitmapDrawable) ((NtChoiceItemView) object).getNetworkImageView().getDrawable()).getBitmap() == null)
+                return;
+            ((BitmapDrawable) ((NtChoiceItemView) object).getNetworkImageView().getDrawable()).getBitmap().recycle();
         }
         container.removeView((View) object);
     }
@@ -80,7 +81,11 @@ public class NtChoiceAdapter extends PagerAdapter {
         NtVisual visual = this.recipes.get(position);
         if (visual.isPrepare()) {
             this.titleSubject.onNext(visual.getTitle().getValue());
-            this.imageViews.get(position).setImageUrl(visual.getImage().getValue(), new ImageLoader(this.app.getQueue(), new ImageLruCache()));
+            this.imageViews.get(position).getNetworkImageView()
+                    .setImageUrl(
+                            visual.getImage().getValue(),
+                            new ImageLoader(this.app.getQueue(), new ImageLruCache()));
+            this.imageViews.get(position).setIngredient(visual.getIngredients().getValue());
         } else {
             subscribe(position);
         }
@@ -96,12 +101,18 @@ public class NtChoiceAdapter extends PagerAdapter {
         this.subscriptions[1] = visual.getImage()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(image -> getItem(position)
-                        .setImageUrl(visual.getImage().getValue(), new ImageLoader(this.app.getQueue(), new ImageLruCache())));
+                        .getNetworkImageView()
+                        .setImageUrl(
+                                visual.getImage().getValue(),
+                                new ImageLoader(this.app.getQueue(), new ImageLruCache())));
+        this.subscriptions[2] = visual.getIngredients()
+                .subscribe(text -> getItem(position).setIngredient(text));
     }
 
     void unsubscribe() {
-        unsubscribe(this.subscriptions[0]);
-        unsubscribe(this.subscriptions[1]);
+        for (Subscription sub : this.subscriptions) {
+            unsubscribe(sub);
+        }
     }
 
     private void unsubscribe(Subscription subscription) {
@@ -109,10 +120,10 @@ public class NtChoiceAdapter extends PagerAdapter {
         subscription.unsubscribe();
     }
 
-    private NetworkImageView getItem(int position) {
-        NetworkImageView view = this.imageViews.get(position);
+    private NtChoiceItemView getItem(int position) {
+        NtChoiceItemView view = this.imageViews.get(position);
         if (view != null) return view;
-        return (NetworkImageView) instantiateItem(new LinearLayout(this.context), position);
+        return (NtChoiceItemView) instantiateItem(new LinearLayout(this.context), position);
     }
 
     public void addItem(String[] ids) {

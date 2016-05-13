@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:original="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -11,75 +10,82 @@
         android:id="@+id/center"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_centerInParent="true"
+        />
+
+    <TextView
+        android:id="@+id/trend_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/dimen_space_16dp"
+        android:text="@string/trend_word"
+        android:textColor="@color/black"
+        />
+
+    <alonedroid.com.nanitabe.view.NtCardView_
+        android:id="@+id/trend_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/center"
+        android:layout_below="@id/trend_main"
         />
 
     <EditText
-        android:id="@+id/nt_top_urasearch_text"
+        android:id="@+id/uratop_search_text"
         style="@style/Widget.Nanitabe.Edit.Text"
         android:layout_width="200dp"
         android:layout_height="@dimen/default_view_height"
-        android:layout_above="@id/center"
+        android:layout_below="@id/center"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/default_view_height"
-        android:layout_marginTop="@dimen/dimen_space_24dp"
+        android:layout_marginTop="@dimen/dimen_space_16dp"
         android:background="@drawable/custom_frame"
         android:gravity="center"
-        android:hint="@string/ura_search"
+        android:hint="@string/search"
         android:inputType="text"
-        >
-
-        <requestFocus/>
-    </EditText>
-
-    <RelativeLayout
-        android:id="@+id/option_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nt_top_urasearch_text"
-        android:layout_centerHorizontal="true"
-        android:background="@color/black"
-        android:padding="0.5dp"
-        >
-
-        <alonedroid.com.nanitabe.view.NtInnerShadowView_
-            android:id="@+id/option_now"
-            android:layout_width="50dp"
-            android:layout_height="@dimen/default_view_height"
-            original:selected="true"
-            original:text="今すぐ検索"
-            />
-
-        <alonedroid.com.nanitabe.view.NtInnerShadowView_
-            android:id="@+id/option_back"
-            android:layout_width="50dp"
-            android:layout_height="@dimen/default_view_height"
-            android:layout_toRightOf="@id/option_now"
-            original:text="隠れて検索"
-            />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/nt_top_search_hint"
-        style="?attr/titleTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimen_space_48dp"
-        android:layout_below="@id/option_wrapper"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dimen_space_8dp"
-        android:gravity="center|left"
-        android:text="@string/now_search_hint"
         />
 
-    <TextView
-        android:id="@+id/nt_top_urasearch"
-        android:layout_width="180dp"
+    <ImageView
+        android:id="@+id/uratop_search"
+        android:layout_width="@dimen/default_view_height"
         android:layout_height="@dimen/default_view_height"
-        android:layout_below="@id/nt_top_search_hint"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_button"
-        android:gravity="center|center"
-        android:text="@string/search_recipe"
-        android:textColor="@color/white_300"
+        android:layout_below="@id/center"
+        android:layout_marginTop="@dimen/dimen_space_16dp"
+        android:layout_toRightOf="@id/uratop_search_text"
+        android:background="@drawable/search"
+        android:clickable="true"
         />
 
+    <TextView
+        android:id="@+id/trend_sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/uratop_search"
+        android:padding="@dimen/dimen_space_16dp"
+        android:text="@string/recomm_word"
+        android:textColor="@color/black"
+        />
+
+    <alonedroid.com.nanitabe.view.NtHistoryItemView_
+        android:id="@+id/trend_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/trend_sub"
+        />
+
+    <alonedroid.com.nanitabe.view.NtHistoryItemView_
+        android:id="@+id/trend_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/trend_2"
+        android:paddingTop="@dimen/dimen_space_8dp"
+        />
+
+    <alonedroid.com.nanitabe.view.NtHistoryItemView_
+        android:id="@+id/trend_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/trend_3"
+        android:paddingTop="@dimen/dimen_space_8dp"
+        />
 </RelativeLayout>

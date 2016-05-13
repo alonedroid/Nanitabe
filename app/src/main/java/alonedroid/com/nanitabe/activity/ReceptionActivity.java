@@ -43,7 +43,12 @@ public class ReceptionActivity extends FragmentActivity {
     protected void onAfterViews() {
         UraSearchService.forceStop();
         UraSearchService_.intent(this).stop();
-        startActivity(VariableActivity.newIntent(this, NtRouter.getChoiceMap(this.sharedPreference.getRecipes(this.argQuery))));
+        String recipes = this.sharedPreference.getRecipes(this.argQuery);
+        if (recipes.length() > 1) {
+            startActivity(VariableActivity.newIntent(this, NtRouter.getChoiceMap(recipes)));
+        } else {
+            this.app.show("レシピが見つかりませんでした。");
+        }
         finish();
     }
 }

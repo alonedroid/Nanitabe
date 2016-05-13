@@ -13,15 +13,15 @@ apply plugin: 'android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "alonedroid.com.nanitabe.activity"
         minSdkVersion 14
-        targetSdkVersion 22
-        versionCode 11
-        versionName "1.1.2"
+        targetSdkVersion 23
+        versionCode 17
+        versionName "1.1.7"
     }
     buildTypes {
         release {
@@ -54,11 +54,11 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.8'
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'com.mcxiaoke.volley:library:1.0.15'
-    compile 'com.android.support:support-v13:21.0.0'
+    compile 'com.android.support:support-v13:23.3.0'
     compile 'org.androidannotations:androidannotations-api:3.2'
     apt "org.androidannotations:androidannotations:3.2"
-    provided 'org.projectlombok:lombok:1.14.2'
-    apt "org.projectlombok:lombok:1.14.2"
+    provided 'org.projectlombok:lombok:1.16.4'
+    apt "org.projectlombok:lombok:1.16.4"
     compile 'com.parse.bolts:bolts-android:1.+'
     compile fileTree(dir: 'libs', include: 'Parse*.jar')
 }

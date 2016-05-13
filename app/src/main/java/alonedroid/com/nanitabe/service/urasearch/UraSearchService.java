@@ -39,7 +39,7 @@ public class UraSearchService extends Service {
     public static final String SEARCH_SERVICE_STARTING_TITLE = "レシピを検索しています";
     public static final String SEARCH_SERVICE_STARTING_CONTENT = "処理を中断できます";
     public static final String SEARCH_SERVICE_WORKING_TITLE = "レシピが見つかりました";
-    public static final String SEARCH_SERVICE_WORKING_CONTENT = "処理を中断してレシピを見れます";
+    public static final String SEARCH_SERVICE_WORKING_CONTENT = "処理を終了してレシピを見れます";
     public static final String SEARCH_SERVICE_COMPLETE_TITLE = "レシピの検索が完了しています";
     public static final String SEARCH_SERVICE_COMPLETE_CONTENT = "%1$sの検索結果は%2$s件です";
 

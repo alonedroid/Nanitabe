@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterInject;
@@ -30,6 +29,7 @@ import alonedroid.com.nanitabe.activity.R;
 import alonedroid.com.nanitabe.activity.VariableActivity;
 import alonedroid.com.nanitabe.utility.NtDataManager;
 import alonedroid.com.nanitabe.utility.NtTextUtility;
+import alonedroid.com.nanitabe.view.NtIndicatorView;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,22 +48,16 @@ public class NtChoiceFragment extends Fragment {
     NtApplication app;
 
     @ViewById
-    TextView menuName;
-
-    @ViewById
-    LinearLayout ntChoiceIndicator;
+    TextView menuName, shareMenu;
 
     @ViewById
     ViewPager ntRecipePager;
 
     @ViewById
-    ImageView prevMenu;
+    ImageView prevMenu, nextMenu;
 
     @ViewById
-    ImageView nextMenu;
-
-    @ViewById
-    TextView shareMenu;
+    NtIndicatorView ntChoiceIndicator;
 
     @Bean
     NtDataManager dataManager;
@@ -174,16 +168,13 @@ public class NtChoiceFragment extends Fragment {
         view.setImageResource(R.drawable.custom_indicator);
         view.setPadding(10, 0, 10, 0);
         view.setEnabled(on);
-        this.ntChoiceIndicator.addView(view);
+        this.ntChoiceIndicator.setCount(this.ntChoiceIndicator.getCount() + 1);
     }
 
     private void selectedPosition(int position) {
         this.adapter.setPosition(position);
         visibleSelectButton(position);
-        Observable.range(0, this.adapter.getCount())
-                .filter(idx -> this.ntChoiceIndicator.getChildAt(idx) != null)
-                .subscribe(idx -> this.ntChoiceIndicator.getChildAt(idx).setEnabled(idx == position))
-                .unsubscribe();
+        this.ntChoiceIndicator.selectAt(position);
     }
 
     private void visibleSelectButton(int position) {
@@ -221,7 +212,9 @@ public class NtChoiceFragment extends Fragment {
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "オススメレシピ");
-        intent.putExtra(Intent.EXTRA_TEXT, "ナニタベを起動して御飯を選んでね♪\nhttp://nanitabe.org?id=" + StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
+        intent.putExtra(Intent.EXTRA_TEXT,
+                "ナニタベを起動して御飯を選んでね♪\nhttp://nanitabe.org?id=" +
+                        StringUtil.join(Arrays.asList(this.argRecipeIds), ","));
         startActivity(Intent.createChooser(intent, "シェアするアプリを選択してください。"));
     }
 
@@ -237,15 +230,8 @@ public class NtChoiceFragment extends Fragment {
     private void decideMenuOpen() {
         String id = this.adapter.getId(this.ntRecipePager.getCurrentItem());
         if (TextUtils.isEmpty(id)) return;
-        try {
-            if (TextUtils.isEmpty(this.argRecipeQuery)) {
-                this.dataManager.table(NtDataManager.TABLE.HISTORY)
-                        .log(this.app.getString(R.string.recipe_url) + id);
-            }
-            startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        startActivity(VariableActivity.newIntent(getActivity(), NtRouter.getRecipeOpenMap(id)));
+        logHistory(id);
     }
 
     private void decideMenuSend() {
@@ -262,6 +248,17 @@ public class NtChoiceFragment extends Fragment {
     void checkRecipes() {
         if (this.adapter.getCount() == 0) {
             this.menuName.setText(this.app.getString(R.string.no_recipes));
+        }
+    }
+
+    private void logHistory(String id) {
+        try {
+            if (TextUtils.isEmpty(this.argRecipeQuery)) {
+                this.dataManager.table(NtDataManager.TABLE.HISTORY)
+                        .log(this.app.getString(R.string.recipe_url) + id);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -14,8 +14,6 @@ public class NtRouter {
 
     private static final String SEPARATOR = "\001";
 
-    private static final String TRUE = "1";
-
     private static final String CHOICE_URASEARCH = "ura_search";
 
     public static String getTopMap() {
@@ -35,7 +33,7 @@ public class NtRouter {
     }
 
     public static String getChoiceMap(String recipes) {
-        return mapping(NtChoiceFragment.class.getSimpleName(), recipes, TRUE, TRUE);
+        return mapping(NtChoiceFragment.class.getSimpleName(), recipes);
     }
 
     public static String getUraSearchMap(String query) {
@@ -86,9 +84,5 @@ public class NtRouter {
         } else {
         }
         return NtChoiceFragment.newInstance(params[1].split(","));
-    }
-
-    private static boolean isTrue(String bln) {
-        return TRUE.equals(bln);
     }
 }
